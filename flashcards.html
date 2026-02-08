@@ -833,8 +833,10 @@
             document.addEventListener('keydown', function(event) {
                 const answerReveal = document.getElementById('answerReveal');
                 
-                // Only respond to shortcuts when answer is revealed and grading buttons are visible
-                if (answerReveal && answerReveal.classList.contains('active')) {
+                // Only respond to shortcuts when answer is revealed and no input field has focus
+                if (answerReveal && answerReveal.classList.contains('active') && 
+                    document.activeElement.tagName !== 'TEXTAREA' && 
+                    document.activeElement.tagName !== 'INPUT') {
                     if (event.key === 'Enter') {
                         event.preventDefault();
                         markAnswer(true);
