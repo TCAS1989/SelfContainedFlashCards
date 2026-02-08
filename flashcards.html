@@ -463,7 +463,7 @@
                 (<span id="percentage">0</span>%)
             </div>
             <button class="btn restart-btn" onclick="restart()">Start New Session</button>
-            <button class="btn details-btn" onclick="showDetailedResults()">View Detailed Results</button>
+            <button class="btn details-btn" onclick="showDetailedResults()" aria-label="View detailed results of your study session">View Detailed Results</button>
         </div>
         
         <!-- Detailed Results Screen -->
@@ -471,7 +471,7 @@
             <h2>📊 Detailed Results</h2>
             <div id="studyModeInfo" class="study-mode-info"></div>
             <div id="resultsTable" class="results-table"></div>
-            <button class="btn restart-btn" onclick="hideDetailedResults()">Back to Summary</button>
+            <button class="btn restart-btn" onclick="hideDetailedResults()" aria-label="Return to summary screen">Back to Summary</button>
         </div>
     </div>
 
@@ -816,6 +816,14 @@
         let correctCount = 0;
         let shuffledCards = [];
         let attemptHistory = []; // Track all attempts: {card, userAnswer, isCorrect}
+        let currentAttempt = null; // Temporary storage for current attempt
+        
+        // HTML escape function to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
 
         // Shuffle array function
         function shuffleArray(array) {
@@ -893,7 +901,7 @@
             const correctAnswer = currentMode === 'terms' ? card.definition : card.term;
             
             // Store the current attempt (will be completed in markAnswer)
-            window.currentAttempt = {
+            currentAttempt = {
                 card: card,
                 userAnswer: userAnswer,
                 correctAnswer: correctAnswer
@@ -917,10 +925,10 @@
             }
             
             // Complete the attempt record
-            if (window.currentAttempt) {
-                window.currentAttempt.isCorrect = isCorrect;
-                attemptHistory.push(window.currentAttempt);
-                window.currentAttempt = null;
+            if (currentAttempt) {
+                currentAttempt.isCorrect = isCorrect;
+                attemptHistory.push(currentAttempt);
+                currentAttempt = null;
             }
             
             currentCardIndex++;
@@ -990,9 +998,15 @@
                 const answerLabel = currentMode === 'terms' ? 'Definition' : 'Term';
                 const questionShown = currentMode === 'terms' ? attempt.card.term : attempt.card.definition;
                 
+                // Escape all user-provided content to prevent XSS
+                const section = escapeHtml(attempt.card.section || 'No Section');
+                const question = escapeHtml(questionShown);
+                const userAnswer = escapeHtml(attempt.userAnswer);
+                const correctAnswer = escapeHtml(attempt.correctAnswer);
+                
                 resultItem.innerHTML = `
                     <div class="result-header">
-                        <div class="result-section">${attempt.card.section || 'No Section'}</div>
+                        <div class="result-section">${section}</div>
                         <div class="result-status ${attempt.isCorrect ? 'correct' : 'incorrect'}">
                             ${attempt.isCorrect ? '✓ Correct' : '✗ Incorrect'}
                         </div>
@@ -1000,15 +1014,15 @@
                     <div class="result-content">
                         <div class="result-row">
                             <span class="result-label">${questionLabel}:</span>
-                            <span class="result-value">${questionShown}</span>
+                            <span class="result-value">${question}</span>
                         </div>
                         <div class="result-row">
                             <span class="result-label">Your Answer:</span>
-                            <div class="user-answer">${attempt.userAnswer}</div>
+                            <div class="user-answer">${userAnswer}</div>
                         </div>
                         <div class="result-row">
                             <span class="result-label">Correct ${answerLabel}:</span>
-                            <span class="result-value">${attempt.correctAnswer}</span>
+                            <span class="result-value">${correctAnswer}</span>
                         </div>
                     </div>
                 `;
