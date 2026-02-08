@@ -254,6 +254,20 @@
         .hidden {
             display: none;
         }
+        
+        .error-message {
+            color: #dc3545;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .error-message.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -278,6 +292,7 @@
                 
                 <div id="inputSection" class="input-section">
                     <input type="text" class="answer-input" id="answerInput" placeholder="Type your answer here..." autocomplete="off">
+                    <div id="errorMessage" class="error-message" role="alert" aria-live="polite"></div>
                 </div>
                 
                 <button class="btn submit-btn" id="submitBtn" onclick="submitAnswer()">Submit Answer</button>
@@ -406,6 +421,10 @@
             document.getElementById('inputSection').classList.remove('hidden');
             document.getElementById('answerReveal').classList.remove('active');
             
+            // Clear any error message
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.classList.remove('active');
+            
             // Focus on input field
             document.getElementById('answerInput').focus();
         }
@@ -413,11 +432,17 @@
         // Submit answer
         function submitAnswer() {
             const userAnswer = document.getElementById('answerInput').value.trim();
+            const errorMessage = document.getElementById('errorMessage');
             
             if (!userAnswer) {
-                alert('Please enter an answer before submitting.');
+                errorMessage.textContent = 'Please enter an answer before submitting.';
+                errorMessage.classList.add('active');
+                document.getElementById('answerInput').focus();
                 return;
             }
+            
+            // Clear any previous error message
+            errorMessage.classList.remove('active');
             
             const card = shuffledCards[currentCardIndex];
             const correctAnswer = currentMode === 'terms' ? card.definition : card.term;
@@ -426,6 +451,11 @@
             document.getElementById('answerInput').disabled = true;
             document.getElementById('submitBtn').disabled = true;
             document.getElementById('answerReveal').classList.add('active');
+            
+            // Focus on the first grading button for better keyboard navigation
+            setTimeout(() => {
+                document.querySelector('.correct-btn').focus();
+            }, 100);
         }
 
         // Mark answer as correct or incorrect
@@ -444,7 +474,7 @@
             document.getElementById('completion').classList.add('active');
             
             const total = shuffledCards.length;
-            const percentage = Math.round((correctCount / total) * 100);
+            const percentage = total > 0 ? Math.round((correctCount / total) * 100) : 0;
             
             document.getElementById('finalScore').textContent = correctCount;
             document.getElementById('finalTotal').textContent = total;
