@@ -292,6 +292,124 @@
             color: #666;
             border-color: #ccc;
         }
+        
+        .details-btn {
+            background: #28a745;
+            color: white;
+            margin-top: 15px;
+        }
+        
+        .details-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+        
+        .detailed-results {
+            display: none;
+            text-align: left;
+        }
+        
+        .detailed-results.active {
+            display: block;
+        }
+        
+        .detailed-results h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .study-mode-info {
+            background: #e7f3ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .results-table {
+            max-height: 500px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        
+        .result-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-item.correct {
+            border-left: 4px solid #28a745;
+        }
+        
+        .result-item.incorrect {
+            border-left: 4px solid #dc3545;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .result-section {
+            font-size: 0.85em;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .result-status {
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.9em;
+        }
+        
+        .result-status.correct {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .result-status.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .result-content {
+            margin-top: 10px;
+        }
+        
+        .result-row {
+            margin-bottom: 8px;
+            padding: 5px 0;
+        }
+        
+        .result-label {
+            font-weight: 600;
+            color: #555;
+            display: inline-block;
+            min-width: 120px;
+        }
+        
+        .result-value {
+            color: #333;
+        }
+        
+        .user-answer {
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 5px;
+            margin-top: 5px;
+            font-family: monospace;
+        }
     </style>
 </head>
 <body>
@@ -345,6 +463,15 @@
                 (<span id="percentage">0</span>%)
             </div>
             <button class="btn restart-btn" onclick="restart()">Start New Session</button>
+            <button class="btn details-btn" onclick="showDetailedResults()">View Detailed Results</button>
+        </div>
+        
+        <!-- Detailed Results Screen -->
+        <div id="detailedResults" class="detailed-results">
+            <h2>📊 Detailed Results</h2>
+            <div id="studyModeInfo" class="study-mode-info"></div>
+            <div id="resultsTable" class="results-table"></div>
+            <button class="btn restart-btn" onclick="hideDetailedResults()">Back to Summary</button>
         </div>
     </div>
 
@@ -688,6 +815,7 @@
         let currentCardIndex = 0;
         let correctCount = 0;
         let shuffledCards = [];
+        let attemptHistory = []; // Track all attempts: {card, userAnswer, isCorrect}
 
         // Shuffle array function
         function shuffleArray(array) {
@@ -704,6 +832,7 @@
             currentMode = mode;
             currentCardIndex = 0;
             correctCount = 0;
+            attemptHistory = [];  // Reset attempt history
             shuffledCards = shuffleArray(flashcards);
             
             document.getElementById('modeSelection').style.display = 'none';
@@ -763,6 +892,13 @@
             const card = shuffledCards[currentCardIndex];
             const correctAnswer = currentMode === 'terms' ? card.definition : card.term;
             
+            // Store the current attempt (will be completed in markAnswer)
+            window.currentAttempt = {
+                card: card,
+                userAnswer: userAnswer,
+                correctAnswer: correctAnswer
+            };
+            
             document.getElementById('correctAnswerText').textContent = correctAnswer;
             document.getElementById('answerInput').disabled = true;
             document.getElementById('submitBtn').disabled = true;
@@ -778,6 +914,13 @@
         function markAnswer(isCorrect) {
             if (isCorrect) {
                 correctCount++;
+            }
+            
+            // Complete the attempt record
+            if (window.currentAttempt) {
+                window.currentAttempt.isCorrect = isCorrect;
+                attemptHistory.push(window.currentAttempt);
+                window.currentAttempt = null;
             }
             
             currentCardIndex++;
@@ -817,9 +960,67 @@
             currentCardIndex = 0;
             correctCount = 0;
             shuffledCards = [];
+            attemptHistory = [];
             
             document.getElementById('modeSelection').style.display = 'flex';
             document.getElementById('completion').classList.remove('active');
+            document.getElementById('detailedResults').classList.remove('active');
+        }
+        
+        // Show detailed results
+        function showDetailedResults() {
+            document.getElementById('completion').classList.remove('active');
+            document.getElementById('detailedResults').classList.add('active');
+            
+            // Display study mode information
+            const modeText = currentMode === 'terms' ? 
+                'You were studying <strong>Terms</strong> (shown terms, asked for definitions)' :
+                'You were studying <strong>Definitions</strong> (shown definitions, asked for terms)';
+            document.getElementById('studyModeInfo').innerHTML = modeText;
+            
+            // Build results table
+            const resultsTable = document.getElementById('resultsTable');
+            resultsTable.innerHTML = '';
+            
+            attemptHistory.forEach((attempt, index) => {
+                const resultItem = document.createElement('div');
+                resultItem.className = `result-item ${attempt.isCorrect ? 'correct' : 'incorrect'}`;
+                
+                const questionLabel = currentMode === 'terms' ? 'Term' : 'Definition';
+                const answerLabel = currentMode === 'terms' ? 'Definition' : 'Term';
+                const questionShown = currentMode === 'terms' ? attempt.card.term : attempt.card.definition;
+                
+                resultItem.innerHTML = `
+                    <div class="result-header">
+                        <div class="result-section">${attempt.card.section || 'No Section'}</div>
+                        <div class="result-status ${attempt.isCorrect ? 'correct' : 'incorrect'}">
+                            ${attempt.isCorrect ? '✓ Correct' : '✗ Incorrect'}
+                        </div>
+                    </div>
+                    <div class="result-content">
+                        <div class="result-row">
+                            <span class="result-label">${questionLabel}:</span>
+                            <span class="result-value">${questionShown}</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Your Answer:</span>
+                            <div class="user-answer">${attempt.userAnswer}</div>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Correct ${answerLabel}:</span>
+                            <span class="result-value">${attempt.correctAnswer}</span>
+                        </div>
+                    </div>
+                `;
+                
+                resultsTable.appendChild(resultItem);
+            });
+        }
+        
+        // Hide detailed results and return to summary
+        function hideDetailedResults() {
+            document.getElementById('detailedResults').classList.remove('active');
+            document.getElementById('completion').classList.add('active');
         }
 
         // Allow Enter key to submit
