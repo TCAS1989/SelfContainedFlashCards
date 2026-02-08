@@ -276,8 +276,8 @@
         
         <!-- Mode Selection -->
         <div id="modeSelection" class="mode-selection">
-            <button class="mode-btn" onclick="startStudy('terms')">Study Terms</button>
-            <button class="mode-btn" onclick="startStudy('definitions')">Study Definitions</button>
+            <button class="mode-btn" onclick="startStudy('terms')" aria-label="Study Terms: You will be shown terms and asked to provide their definitions">Study Terms</button>
+            <button class="mode-btn" onclick="startStudy('definitions')" aria-label="Study Definitions: You will be shown definitions and asked to provide the matching terms">Study Definitions</button>
         </div>
         
         <!-- Card Study Interface -->
@@ -291,8 +291,8 @@
                 <div class="card-question" id="cardQuestion"></div>
                 
                 <div id="inputSection" class="input-section">
-                    <input type="text" class="answer-input" id="answerInput" placeholder="Type your answer here..." autocomplete="off">
-                    <div id="errorMessage" class="error-message" role="alert" aria-live="polite"></div>
+                    <input type="text" class="answer-input" id="answerInput" placeholder="Type your answer here..." autocomplete="off" aria-label="Your answer">
+                    <div id="errorMessage" class="error-message" role="alert" aria-live="assertive"></div>
                 </div>
                 
                 <button class="btn submit-btn" id="submitBtn" onclick="submitAnswer()">Submit Answer</button>
@@ -304,8 +304,8 @@
                     </div>
                     
                     <div class="grading-section">
-                        <button class="grade-btn correct-btn" onclick="markAnswer(true)">✓ I Was Correct</button>
-                        <button class="grade-btn incorrect-btn" onclick="markAnswer(false)">✗ I Was Incorrect</button>
+                        <button class="grade-btn correct-btn" onclick="markAnswer(true)" aria-label="I was correct">✓ I Was Correct</button>
+                        <button class="grade-btn incorrect-btn" onclick="markAnswer(false)" aria-label="I was incorrect">✗ I Was Incorrect</button>
                     </div>
                 </div>
             </div>
