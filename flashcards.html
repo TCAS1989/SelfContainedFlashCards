@@ -917,7 +917,13 @@
             document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         }
         
-        // Get correct answers from cookie (returns array of term-definition pairs)
+        // Generate a unique identifier for a card
+        function getCardId(card) {
+            // Use JSON.stringify to handle any special characters properly
+            return JSON.stringify({ term: card.term, definition: card.definition });
+        }
+        
+        // Get correct answers from cookie (returns array of card IDs)
         function getCorrectAnswers() {
             const cookieValue = getCookie('flashcardCorrectAnswers');
             if (!cookieValue) return [];
@@ -937,8 +943,7 @@
         // Add a card to correct answers
         function addCorrectAnswer(card) {
             let correctAnswers = getCorrectAnswers();
-            // Store a unique identifier for the card (term + definition)
-            const cardId = card.term + '|||' + card.definition;
+            const cardId = getCardId(card);
             if (!correctAnswers.includes(cardId)) {
                 correctAnswers.push(cardId);
                 saveCorrectAnswers(correctAnswers);
@@ -948,7 +953,7 @@
         // Check if a card is in correct answers
         function isCardCorrect(card) {
             const correctAnswers = getCorrectAnswers();
-            const cardId = card.term + '|||' + card.definition;
+            const cardId = getCardId(card);
             return correctAnswers.includes(cardId);
         }
         
