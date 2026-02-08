@@ -1003,7 +1003,7 @@
             
             if (masteredCount > 0) {
                 progressInfo.style.display = 'block';
-                progressInfo.textContent = `You have ${masteredCount} correct answer${masteredCount === 1 ? '' : 's'} saved. ${incorrectCount} card${incorrectCount === 1 ? '' : 's'} remaining to master.`;
+                progressInfo.textContent = `You have mastered ${masteredCount} card${masteredCount === 1 ? '' : 's'}. ${incorrectCount} card${incorrectCount === 1 ? '' : 's'} remaining to master.`;
                 studyIncorrectBtn.disabled = incorrectCount === 0;
                 
                 if (incorrectCount === 0) {
