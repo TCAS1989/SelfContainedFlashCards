@@ -1004,7 +1004,7 @@
             if (masteredCount > 0) {
                 progressInfo.style.display = 'block';
                 progressInfo.textContent = `You have mastered ${masteredCount} card${masteredCount === 1 ? '' : 's'}. ${incorrectCount} card${incorrectCount === 1 ? '' : 's'} remaining to master.`;
-                progressInfo.setAttribute('aria-label', `You have mastered ${masteredCount} card${masteredCount === 1 ? '' : 's'}. ${incorrectCount} card${incorrectCount === 1 ? '' : 's'} remaining to master.`);
+                progressInfo.removeAttribute('aria-label');
                 studyIncorrectBtn.disabled = incorrectCount === 0;
                 
                 if (incorrectCount === 0) {
