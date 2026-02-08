@@ -788,12 +788,12 @@
             document.getElementById('cardContainer').classList.remove('active');
             document.getElementById('completion').classList.add('active');
             
-            // Use currentCardIndex as the number of cards seen (not total deck)
-            const cardsSeen = currentCardIndex;
-            const percentage = cardsSeen > 0 ? Math.round((correctCount / cardsSeen) * 100) : 0;
+            // Use currentCardIndex as the number of cards completed
+            const cardsCompleted = currentCardIndex;
+            const percentage = cardsCompleted > 0 ? Math.round((correctCount / cardsCompleted) * 100) : 0;
             
             document.getElementById('finalScore').textContent = correctCount;
-            document.getElementById('finalTotal').textContent = cardsSeen;
+            document.getElementById('finalTotal').textContent = cardsCompleted;
             document.getElementById('percentage').textContent = percentage;
         }
         
