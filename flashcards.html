@@ -305,6 +305,18 @@
             box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
         }
         
+        .download-csv-btn {
+            background: #17a2b8;
+            color: white;
+            margin-top: 15px;
+        }
+        
+        .download-csv-btn:hover {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.4);
+        }
+        
         .detailed-results {
             display: none;
             text-align: left;
@@ -471,6 +483,7 @@
             <h2>📊 Detailed Results</h2>
             <div id="studyModeInfo" class="study-mode-info"></div>
             <div id="resultsTable" class="results-table"></div>
+            <button class="btn download-csv-btn" onclick="downloadCSV()" aria-label="Download results as CSV file">Download as CSV</button>
             <button class="btn restart-btn" onclick="hideDetailedResults()" aria-label="Return to summary screen">Back to Summary</button>
         </div>
     </div>
@@ -986,11 +999,18 @@
                 'You were studying <strong>Definitions</strong> (shown definitions, asked for terms)';
             document.getElementById('studyModeInfo').innerHTML = modeText;
             
+            // Sort attempt history by section to group common topics together
+            const sortedAttempts = [...attemptHistory].sort((a, b) => {
+                const sectionA = a.card.section || '';
+                const sectionB = b.card.section || '';
+                return sectionA.localeCompare(sectionB);
+            });
+            
             // Build results table
             const resultsTable = document.getElementById('resultsTable');
             resultsTable.innerHTML = '';
             
-            attemptHistory.forEach((attempt, index) => {
+            sortedAttempts.forEach((attempt, index) => {
                 const resultItem = document.createElement('div');
                 resultItem.className = `result-item ${attempt.isCorrect ? 'correct' : 'incorrect'}`;
                 
@@ -1035,6 +1055,64 @@
         function hideDetailedResults() {
             document.getElementById('detailedResults').classList.remove('active');
             document.getElementById('completion').classList.add('active');
+        }
+        
+        // Download results as CSV
+        function downloadCSV() {
+            // Sort attempt history by section
+            const sortedAttempts = [...attemptHistory].sort((a, b) => {
+                const sectionA = a.card.section || '';
+                const sectionB = b.card.section || '';
+                return sectionA.localeCompare(sectionB);
+            });
+            
+            // Determine column headers based on study mode
+            const questionLabel = currentMode === 'terms' ? 'Term' : 'Definition';
+            const answerLabel = currentMode === 'terms' ? 'Definition' : 'Term';
+            
+            // Create CSV header
+            let csv = 'Section,' + questionLabel + ',Your Answer,Correct ' + answerLabel + ',Result\n';
+            
+            // Add each attempt as a row
+            sortedAttempts.forEach(attempt => {
+                const section = attempt.card.section || 'No Section';
+                const questionShown = currentMode === 'terms' ? attempt.card.term : attempt.card.definition;
+                const result = attempt.isCorrect ? 'Correct' : 'Incorrect';
+                
+                // Escape CSV values (handle commas and quotes)
+                const escapeCSV = (value) => {
+                    value = String(value).replace(/"/g, '""');
+                    if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+                        return '"' + value + '"';
+                    }
+                    return value;
+                };
+                
+                csv += escapeCSV(section) + ',';
+                csv += escapeCSV(questionShown) + ',';
+                csv += escapeCSV(attempt.userAnswer) + ',';
+                csv += escapeCSV(attempt.correctAnswer) + ',';
+                csv += escapeCSV(result) + '\n';
+            });
+            
+            // Create download link
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            // Generate filename with current date/time
+            const now = new Date();
+            const dateStr = now.toISOString().slice(0, 10);
+            const timeStr = now.toTimeString().slice(0, 5).replace(':', '-');
+            const modeStr = currentMode === 'terms' ? 'Terms' : 'Definitions';
+            const filename = `Flashcard_Results_${modeStr}_${dateStr}_${timeStr}.csv`;
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         // Allow Enter key to submit
