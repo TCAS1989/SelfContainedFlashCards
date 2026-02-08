@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D684 Key Terms Flashcards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+        
+        .mode-selection {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .mode-btn {
+            flex: 1;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .mode-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .card-container {
+            display: none;
+        }
+        
+        .card-container.active {
+            display: block;
+        }
+        
+        .progress {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+        
+        .card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-prompt {
+            font-size: 1.2em;
+            color: #444;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .card-question {
+            font-size: 1.5em;
+            color: #222;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .input-section {
+            margin-bottom: 20px;
+        }
+        
+        .answer-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            transition: border-color 0.3s;
+            resize: vertical;
+            min-height: 60px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .answer-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .submit-btn {
+            background: #667eea;
+            color: white;
+        }
+        
+        .submit-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .answer-reveal {
+            display: none;
+            margin-bottom: 25px;
+        }
+        
+        .answer-reveal.active {
+            display: block;
+        }
+        
+        .correct-answer {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .correct-answer-label {
+            color: #155724;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .correct-answer-text {
+            color: #155724;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+        
+        .grading-section {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .grade-btn {
+            flex: 1;
+            padding: 15px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .correct-btn {
+            background: #28a745;
+            color: white;
+        }
+        
+        .correct-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+        
+        .incorrect-btn {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .incorrect-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+        }
+        
+        .completion {
+            display: none;
+            text-align: center;
+        }
+        
+        .completion.active {
+            display: block;
+        }
+        
+        .completion h2 {
+            color: #28a745;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        
+        .score {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .restart-btn {
+            background: #667eea;
+            color: white;
+        }
+        
+        .restart-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .error-message {
+            color: #dc3545;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .error-message.active {
+            display: block;
+        }
+        
+        .end-early-btn {
+            margin-top: 15px;
+            padding: 8px 16px;
+            font-size: 0.9em;
+            background: transparent;
+            color: #999;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .end-early-btn:hover {
+            background: #f8f9fa;
+            color: #666;
+            border-color: #ccc;
+        }
+        
+        .details-btn {
+            background: #28a745;
+            color: white;
+            margin-top: 15px;
+        }
+        
+        .details-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+        
+        .download-csv-btn {
+            background: #17a2b8;
+            color: white;
+            margin-top: 15px;
+        }
+        
+        .download-csv-btn:hover {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.4);
+        }
+        
+        .detailed-results {
+            display: none;
+            text-align: left;
+        }
+        
+        .detailed-results.active {
+            display: block;
+        }
+        
+        .detailed-results h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .study-mode-info {
+            background: #e7f3ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .results-table {
+            max-height: 500px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        
+        .result-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-item.correct {
+            border-left: 4px solid #28a745;
+        }
+        
+        .result-item.incorrect {
+            border-left: 4px solid #dc3545;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .result-section {
+            font-size: 0.85em;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .result-status {
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.9em;
+        }
+        
+        .result-status.correct {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .result-status.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .result-content {
+            margin-top: 10px;
+        }
+        
+        .result-row {
+            margin-bottom: 8px;
+            padding: 5px 0;
+        }
+        
+        .result-label {
+            font-weight: 600;
+            color: #555;
+            display: inline-block;
+            min-width: 120px;
+        }
+        
+        .result-value {
+            color: #333;
+        }
+        
+        .user-answer {
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 5px;
+            margin-top: 5px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 D684 Flashcard Study</h1>
+        
+        <!-- Mode Selection -->
+        <div id="modeSelection" class="mode-selection">
+            <button class="mode-btn" onclick="startStudy('terms')" aria-label="Study Terms: You will be shown terms and asked to provide their definitions">Study Terms</button>
+            <button class="mode-btn" onclick="startStudy('definitions')" aria-label="Study Definitions: You will be shown definitions and asked to provide the matching terms">Study Definitions</button>
+        </div>
+        
+        <!-- Card Study Interface -->
+        <div id="cardContainer" class="card-container">
+            <div class="progress">
+                Card <span id="currentCard">1</span> of <span id="totalCards">0</span>
+            </div>
+            
+            <div class="card">
+                <div class="card-prompt" id="cardPrompt">What is the definition of:</div>
+                <div class="card-question" id="cardQuestion"></div>
+                
+                <div id="inputSection" class="input-section">
+                    <textarea class="answer-input" id="answerInput" placeholder="Type your answer here..." autocomplete="off" aria-label="Your answer" rows="3"></textarea>
+                    <div id="errorMessage" class="error-message" role="alert" aria-live="assertive"></div>
+                </div>
+                
+                <button class="btn submit-btn" id="submitBtn" onclick="submitAnswer()">Submit Answer</button>
+                
+                <div id="answerReveal" class="answer-reveal">
+                    <div class="correct-answer">
+                        <div class="correct-answer-label">Correct Answer:</div>
+                        <div class="correct-answer-text" id="correctAnswerText"></div>
+                    </div>
+                    
+                    <div class="grading-section">
+                        <button class="grade-btn correct-btn" onclick="markAnswer(true)" aria-label="I was correct, press Enter">✓ I Was Correct (ENTER)</button>
+                        <button class="grade-btn incorrect-btn" onclick="markAnswer(false)" aria-label="I was incorrect, press Space">✗ I Was Incorrect (SPACE)</button>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="end-early-btn" onclick="endEarly()">End Study Session</button>
+        </div>
+        
+        <!-- Completion Screen -->
+        <div id="completion" class="completion">
+            <h2>🎉 Study Session Complete!</h2>
+            <div class="score">
+                Score: <span id="finalScore">0</span>/<span id="finalTotal">0</span>
+                (<span id="percentage">0</span>%)
+            </div>
+            <button class="btn restart-btn" onclick="restart()">Start New Session</button>
+            <button class="btn details-btn" onclick="showDetailedResults()" aria-label="View detailed results of your study session">View Detailed Results</button>
+        </div>
+        
+        <!-- Detailed Results Screen -->
+        <div id="detailedResults" class="detailed-results">
+            <h2>📊 Detailed Results</h2>
+            <div id="studyModeInfo" class="study-mode-info"></div>
+            <div id="resultsTable" class="results-table"></div>
+            <button class="btn download-csv-btn" onclick="downloadCSV()" aria-label="Download results as CSV file">Download as CSV</button>
+            <button class="btn restart-btn" onclick="hideDetailedResults()" aria-label="Return to summary screen">Back to Summary</button>
+        </div>
+    </div>
+
+    <script>
+        // Flashcard Data - Easy to modify JSON structure
+        const flashcards = [
+            {"term": "analog data", "definition": "data represented in a continuous and variable form", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "American Standard Code for Information Interchange (ASCII)", "definition": "a standard encoding system for text characters that uses numeric values to represent letters, numbers, and symbols", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "bandwidth", "definition": "the maximum rate of data transfer across a network or communication channel, usually measured in bits per second", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "binary", "definition": "a numerical system that uses only two digits, zero and one, to represent data in computing", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "Boolean expression", "definition": "a logical statement that can only be true or false and uses operators like AND, OR, and NOT", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "character", "definition": "a single letter, digit, or symbol used in writing text", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "character set", "definition": "a collection of characters that a computer can recognize and process, like ASCII or Unicode", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "compression ratio", "definition": "the ratio of the original data size to the compressed data size, indicating how much the data has been reduced", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "control structure", "definition": "constructs in programming that control the flow of execution, such as loops and conditional statements", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "data", "definition": "raw facts and figures that can be processed to produce meaningful information", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "data compression", "definition": "the process of reducing the size of data to save space or transmission time", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "data types", "definition": "categories of data that define what kind of value can be stored, like integers, floats, and strings, and how it can be used", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "declaration", "definition": "a statement in programming that specifies the name and type of a variable or function without assigning a value", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "digital data", "definition": "data represented using discrete binary values (zeroes and ones)", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "floating point", "definition": "a way to represent real numbers that can have fractional parts using a format that includes a base and an exponent", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "Huffman encoding", "definition": "a compression technique that uses variable -length codes for data representation based on frequency of occurrence", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "information", "definition": "data that have been processed or organized in a meaningful way to be useful", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "integer", "definition": "a whole number", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "keyword encoding", "definition": "a method of data compression that replaces frequently occurring patterns with shorter codes", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "lossless", "definition": "a type of data compression where no information is lost and the original data can be perfectly reconstructed", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "lossy", "definition": "a type of data compression that reduces file size by permanently eliminating some information, which may affect quality", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "numeric", "definition": "any value that is a number", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "overflow", "definition": "a condition in which a calculation exceeds the maximum value that can be represented within a given number of bits", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "pulse-code modulation (PCM)", "definition": "a method used to digitally represent analog signals", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "radix point", "definition": "the decimal point in a number system that indicates the separation between integer and fractional parts", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "real", "definition": "a data type representing numbers that can have fractional parts, often called floating -point numbers", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "reclocking", "definition": "the process of refreshing the timing signals in digital data to ensure accuracy and synchronization", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "run-length encoding", "definition": "a simple compression technique that replaces sequences of repeated characters with a single character and a count", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "scientific notation", "definition": "a method of representing very large or very small numbers by using powers of 10", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "signed-magnitude representation", "definition": "a way of encoding positive and negative numbers where one bit represents the sign and the remaining bits represent the magnitude", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "string", "definition": "a sequence of characters treated as a single data element and used for text manipulation", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "strong typing", "definition": "a feature in programming languages where each variable is explicitly declared to be of a specific type, reducing errors", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "ten's complement", "definition": "a mathematical method for representing negative numbers in a decimal system", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "Unicode", "definition": "a universal character set that includes characters from virtually all writing systems, allowing for consistent encoding and representation of text globally", "section": "Section 1.1 .1 Introduction to Computer Science"},
+            {"term": "alphanumeric values", "definition": "characters that include both letters (A -Z) and numbers (0 -9)", "section": "Section 1.1.2 Data types"},
+            {"term": "assignment operator", "definition": "a symbol used to assign a value to a variable, typically =", "section": "Section 1.1.2 Data types"},
+            {"term": "assignment statement", "definition": "a line of code that assigns a value to a variable, like x = 5", "section": "Section 1.1.2 Data types"},
+            {"term": "binary operator", "definition": "an operator that takes two operands, such as +, -, *, and /", "section": "Section 1.1.2 Data types"},
+            {"term": "camel casing", "definition": "a naming convention where the first letter is lowercase and each subsequent word starts with an uppercase letter, like myVariableName", "section": "Section 1.1.2 Data types"},
+            {"term": "garbage", "definition": "unused or leftover data in memory that the program no longer needs or references", "section": "Section 1.1.2 Data types"},
+            {"term": "Hungarian notation", "definition": "a naming convention where the name of a variable starts with a prefix indicating its type, like strName for a string variable", "section": "Section 1.1.2 Data types"},
+            {"term": "identifier", "definition": "a name given to a variable, function, or other item in code to identify it", "section": "Section 1.1.2 Data types"},
+            {"term": "initializing a variable", "definition": "assigning an initial value to a variable when it is declared, like int x = 10", "section": "Section 1.1.2 Data types"},
+            {"term": "kebob case", "definition": "a naming convention where words are all lowercase and separated by hyphens, like my-variable-name", "section": "Section 1.1.2 Data types"},
+            {"term": "keyword (reserved word)", "definition": "a reserved word in a programming language that has a specific meaning and cannot be used as an identifier, like if, while, and class", "section": "Section 1.1.2 Data types"},
+            {"term": "lvalue", "definition": "an expression that refers to a memory location, which can appear on the left side of an assignment, like x in x = 5", "section": "Section 1.1.2 Data types"},
+            {"term": "mixed case with underscores", "definition": "a naming convention that combines uppercase and lowercase letters with underscores between words, like My_Variable_Name", "section": "Section 1.1.2 Data types"},
+            {"term": "numeric constant", "definition": "a fixed number value written directly in the code, like 42", "section": "Section 1.1.2 Data types"},
+            {"term": "numeric variable", "definition": "a variable that holds a number value", "section": "Section 1.1.2 Data types"},
+            {"term": "operand", "definition": "a value or variable on which an operator acts, like 3 and 5 in 3 + 5", "section": "Section 1.1.2 Data types"},
+            {"term": "Pascal casing", "definition": "a naming convention in which each word in the name starts with an uppercase letter, like MyVariableName", "section": "Section 1.1.2 Data types"},
+            {"term": "right-to-left associativity", "definition": "the order in which operations are performed in expressions where operators of the same precedence appear, processed from right to left", "section": "Section 1.1.2 Data types"},
+            {"term": "snake casing", "definition": "a naming convention in which words are all lowercase and separated by underscores, like my_variable_name", "section": "Section 1.1.2 Data types"},
+            {"term": "string constant", "definition": "a fixed sequence of characters written directly in the code, like 'Hello, World!'", "section": "Section 1.1.2 Data types"},
+            {"term": "string variable", "definition": "a variable that holds a sequence of characters (a string)", "section": "Section 1.1.2 Data types"},
+            {"term": "type safety", "definition": "ensuring a variable is only used in ways consistent with its data type, preventing type errors", "section": "Section 1.1.2 Data types"},
+            {"term": "unnamed constant", "definition": "a fixed value used directly in code without assigning it to a variable, also known as a magic number, like 3.14 for Ï€", "section": "Section 1.1.2 Data types"},
+            {"term": "variable", "definition": "a named storage location in memory that can hold different values throughout a program", "section": "Section 1.1.2 Data types"},
+            {"term": "abstract step", "definition": "a high-level action in an algorithm that describes what needs to be done without detailing how to do it", "section": "Section 1.1.3 Variables"},
+            {"term": "algorithm", "definition": "a step-by-step set of instructions designed to perform a specific task or solve a problem", "section": "Section 1.1.3 Variables"},
+            {"term": "branch", "definition": "a point in an algorithm where a decision is made, leading to different actions based on conditions (e.g., if -then statements)", "section": "Section 1.1.3 Variables"},
+            {"term": "infinite loop", "definition": "a loop that never ends because the termination condition is never met or is incorrectly written", "section": "Section 1.1.3 Variables"},
+            {"term": "input", "definition": "data that are provided to a program for processing", "section": "Section 1.1.3 Variables"},
+            {"term": "loop control variable", "definition": "a variable that determines whether the loop will continue running or stop, often incremented or modified within the loop", "section": "Section 1.1.3 Variables"},
+            {"term": "nested structure", "definition": "a programming construct where one control structure (like a loop or a conditional statement) is placed inside another", "section": "Section 1.1.3 Variables"},
+            {"term": "output", "definition": "data that are produced by a program and presented to the user or another system", "section": "Section 1.1.3 Variables"},
+            {"term": "pretest loop", "definition": "a loop that evaluates its condition before executing the body of the loop, such as a while loop", "section": "Section 1.1.3 Variables"},
+            {"term": "pseudocode", "definition": "A simplified, human -readable version of a program's code that outlines the logic without strict syntax rules", "section": "Section 1.1.3 Variables"},
+            {"term": "repetition (iteration)", "definition": "the act of executing a set of instructions multiple times, typically using loops", "section": "Section 1.1.3 Variables"},
+            {"term": "selection", "definition": "a control structure that allows a program to choose between different actions based on conditions (similar to a branch)", "section": "Section 1.1.3 Variables"},
+            {"term": "left-to-right associativity", "definition": "the rule that operators with the same precedence are evaluated from left to right in an expression", "section": "Section 1.1.4 Operators"},
+            {"term": "magic number", "definition": "a hard-coded number in a program that lacks context or explanation, making the code harder to understand and maintain", "section": "Section 1.1.4 Operators"},
+            {"term": "named constant", "definition": "a variable with a value that is set once and cannot be changed; it is used to give meaningful names to fixed values", "section": "Section 1.1.4 Operators"},
+            {"term": "overhead", "definition": "the extra processing time, memory, or other resources required by a computer program beyond the actual task it is performing", "section": "Section 1.1.4 Operators"},
+            {"term": "rules of precedence (order of operations)", "definition": "the rules that define the sequence in which different operations (like addition and multiplication) are performed in an expression to ensure consistent results", "section": "Section 1.1.4 Operators"},
+            {"term": "abstract data type", "definition": "a blueprint for organizing and working with data that defines what operations can be performed on the data without specifying how they are implemented", "section": "Section 1.2.1 Data Structures"},
+            {"term": "array", "definition": "a collection of items stored in a contiguous memory block, each identified by an index number, allowing for efficient access to elements based on their position", "section": "Section 1.2.1 Data Structures"},
+            {"term": "composite variable", "definition": "a variable that can hold multiple pieces of data, often grouped together under a single name", "section": "Section 1.2.1 Data Structures"},
+            {"term": "container", "definition": "a data structure that holds a collection of elements, providing methods to add, remove, and access items within it", "section": "Section 1.2.1 Data Structures"},
+            {"term": "data structure", "definition": "a way of organizing and storing data in a computer's memory designed to facilitate the efficient retrieval, insertion, and deletion of data", "section": "Section 1.2.1 Data Structures"},
+            {"term": "linked list", "definition": "a sequence of elements where each element points to the next one, forming a chain", "section": "Section 1.2.1 Data Structures"},
+            {"term": "linked structure", "definition": "any structure composed of elements connected by links or pointers, enabling dynamic relationships among data elements", "section": "Section 1.2.1 Data Structures"},
+            {"term": "list", "definition": "a collection of items arranged in a linear sequence, allowing for easy access to and the insertion and deletion of elements", "section": "Section 1.2.1 Data Structures"},
+            {"term": "queue", "definition": "a data structure that follows a first -in, first-out (FIFO) order where elements are added to the back and removed from the front", "section": "Section 1.2.1 Data Structures"},
+            {"term": "record", "definition": "a data structure that groups related pieces of information under a single name, typically consisting of multiple fields or attributes", "section": "Section 1.2.1 Data Structures"},
+            {"term": "stack", "definition": "a data structure that follows a last -in, first-out (LIFO) order where elements are added and removed from the same end, known as the top", "section": "Section 1.2.1 Data Structures"},
+            {"term": "argument", "definition": "the actual value or data you pass to a function or subprogram when you call it", "section": "Section 1.2.2 Subprograms"},
+            {"term": "parameter", "definition": "a variable in a function or subprogram definition that acts as a placeholder for the value (argument) you pass when you call the function", "section": "Section 1.2.2 Subprograms"},
+            {"term": "parameter list", "definition": "a set of parameters defined in a function or subprogram specifying the number and types of inputs the function can accept", "section": "Section 1.2.2 Subprograms"},
+            {"term": "reference parameter", "definition": "a type of parameter that allows a function to modify the actual variable passed to it", "section": "Section 1.2.2 Subprograms"},
+            {"term": "subprogram (function)", "definition": "a general term for a block of code that performs a specific task and can be reused", "section": "Section 1.2.2 Subprograms"},
+            {"term": "value parameter", "definition": "a type of parameter that passes a copy of the argument's value to the function", "section": "Section 1.2.2 Subprograms"},
+            {"term": "asynchronous", "definition": "a type of operation that runs independently of the main program flow, allowing additional tasks to happen without waiting for others to complete", "section": "Section 1.3.1 Object Oriented Programming basics"},
+            {"term": "bytecode", "definition": "a low -level, platform -independent code that is executed by a virtual machine, typically produced by compiling source code", "section": "Section 1.3.1 Object Oriented Programming basics"},
+            {"term": "case sensitive", "definition": "when a programming language treats uppercase and lowercase letters as different characters", "section": "Section 1.3.1 Object Oriented Programming basics"},
+            {"term": "class", "definition": "a blueprint for creating objects in object -oriented programming that defines the properties and behaviors the objects will have", "section": "Section 1.3.1 Object Oriented Programming basics"},
+            {"term": "compiler", "definition": "a tool that translates source code written in a high -level programming language into machine code or bytecode that a computer can execute", "section": "Section 1.3.1 Object Oriented Programming basics"},
+            {"term": "encapsulation", "definition": "bundling data and methods that operate on the data into a single unit (a class) and restricting access to some of the object's components", "section": "Section 1.3.1 Object Oriented Programming basics"},
+            {"term": "field", "definition": "a variable associated with a class or object that represents a piece of data stored in that object", "section": "Section 1.3.1 Object Oriented Programming basics"},
+            {"term": "inheritance", "definition": "the creation of a new class based on an existing class, inheriting its properties and methods while adding new ones or modifying existing ones", "section": "Section 1.3.1 Object Oriented Programming basics"},
+            {"term": "instantiate", "definition": "the process of creating a specific instance of a class, resulting in an object", "section": "Section 1.3.1 Object Oriented Programming basics"},
+            {"term": "interpreter", "definition": "a tool that executes source code directly and translates it into machine code in real time rather than compiling it before", "section": "Section 1.3.1 Object Oriented Programming basics"},
+            {"term": "method", "definition": "a function defined within a class that describes the behaviors or actions an object can perform", "section": "Section 1.3.1 Object Oriented Programming basics"},
+            {"term": "object", "definition": "an instance of a class containing data and methods defined by the class, representing a specific entity in a program", "section": "Section 1.3.1 Object Oriented Programming basics"},
+            {"term": "paradigm", "definition": "a style or approach to programming -such as object -oriented, procedural, or functional programming -that dictates how code is structured and organized", "section": "Section 1.3.1 Object Oriented Programming basics"},
+            {"term": "polymorphism", "definition": "a concept that allows objects of different classes to be treated as objects of a common superclass", "section": "Section 1.3.1 Object Oriented Programming basics"},
+            {"term": "strong typing", "definition": "a feature in which each variable has a specific type and you must follow strict rules about how types are used and combined, helping prevent errors in your code", "section": "Section 1.3.1 Object Oriented Programming basics"},
+            {"term": "algorithm", "definition": "a step-by-step procedure or set of rules designed to solve a specific problem or perform a particular task", "section": "Section 2.1 .1 Computational thinking"},
+            {"term": "analysis", "definition": "examining and understanding the problem thoroughly to identify its requirements, constraints, and objectives", "section": "Section 2.1 .1 Computational thinking"},
+            {"term": "design", "definition": "planning and creating a solution to the problem based on the analysis; often involves the creation of algorithms and data structures", "section": "Section 2.1 .1 Computational thinking"},
+            {"term": "implementation", "definition": "writing code or programming to execute the designed solution using a specific programming language or tool", "section": "Section 2.1 .1 Computational thinking"},
+            {"term": "maintenance", "definition": "the ongoing process of keeping a system, machine, or software in good working condition", "section": "Section 2.1 .1 Computational thinking"},
+            {"term": "testing", "definition": "evaluating the solution by running the program with different inputs to ensure it produces the expected outputs and behaves correctly", "section": "Section 2.1 .1 Computational thinking"},
+            {"term": "end user", "definition": "the person who ultimately uses a software application or system", "section": "Section 2.1.2 Software development life cycle"},
+            {"term": "debugging", "definition": "the process of identifying and fixing errors or 'bugs' in the code that cause unexpected behavior or incorrect results", "section": "Section 2.1.2 Software development life cycle"},
+            {"term": "documentation", "definition": "all the paperwork needed to produce a program", "section": "Section 2.1.2 Software development life cycle"},
+            {"term": "high-level programming language", "definition": "a type of programming language designed to be easy for humans to read and write", "section": "Section 2.1.2 Software development life cycle"},
+            {"term": "low-level programming language", "definition": "a type of programming language closer to the machine's native language", "section": "Section 2.1.2 Software development life cycle"},
+            {"term": "software development lifecycle", "definition": "a systematic process consisting of several phases that are followed to produce high -quality software", "section": "Section 2.1.2 Software development life cycle"},
+            {"term": "Association for Computing Machinery (ACM)", "definition": "an international organization dedicated to advancing computing as a science and profession", "section": "Section 2.2 .1 Codes of ethics & professional conduct"},
+            {"term": "code of ethics", "definition": "professional code of conduct and ethical guidelines established by organizations and industry associations to govern the behavior of computer scientists and technology professionals", "section": "Section 2.2 .1 Codes of ethics & professional conduct"},
+            {"term": "Institute of Electrical and Electronics Engineers (IEEE)", "definition": "an international organization focused on fostering innovation and excellence in electrical, electronics, and computing engineering", "section": "Section 2.2 .1 Codes of ethics & professional conduct"},
+            {"term": "privacy", "definition": "respecting and protecting individuals' privacy and confidentiality in the collection, storage, and use of personal data", "section": "Section 2.2 .1 Codes of ethics & professional conduct"},
+            {"term": "professionalism", "definition": "demonstrating competence, responsibility, and accountability in all professional activities and interactions", "section": "Section 2.2 .1 Codes of ethics & professional conduct"},
+            {"term": "public interest", "definition": "prioritizing the well -being and safety of the public in the design, development, and deployment of computing technology and systems", "section": "Section 2.2 .1 Codes of ethics & professional conduct"},
+            {"term": "security", "definition": "ensuring the security and integrity of computing systems and data and taking measures to prevent unauthorized access, misuse, and harm", "section": "Section 2.2 .1 Codes of ethics & professional conduct"},
+            {"term": "copyright", "definition": "a legal right granted to the creators of original works -such as literature, music, and art-protecting the creator's work from being used without permission", "section": "Section 2.3 .1 Ethical & societal considerations in computer science"},
+            {"term": "cyberbullying", "definition": "harassment and intimidation conducted through digital platforms, including social media, messaging apps, and online forums", "section": "Section 2.3 .1 Ethical & societal considerations in computer science"},
+            {"term": "cybercrime", "definition": "illegal activities conducted using computers and the internet, such as hacking, identity theft, and online fraud", "section": "Section 2.3 .1 Ethical & societal considerations in computer science"},
+            {"term": "fair use", "definition": "a legal doctrine that allows the limited use of copyrighted material", "section": "Section 2.3 .1 Ethical & societal considerations in computer science"},
+            {"term": "file sharing", "definition": "the practice of distributing or providing access to digital files -such as documents, music, or software -over the internet or a network", "section": "Section 2.3 .1 Ethical & societal considerations in computer science"},
+            {"term": "intellectual property", "definition": "creations of the mind, such as inventions, literary and artistic works, designs, symbols, names, and images", "section": "Section 2.3 .1 Ethical & societal considerations in computer science"},
+            {"term": "malware", "definition": "malicious software; refers to any software designed to harm, exploit, or otherwise compromise the operation of computers, networks, or devices", "section": "Section 2.3 .1 Ethical & societal considerations in computer science"},
+            {"term": "patent", "definition": "a legal right granted to an inventor giving them exclusive control over the use and commercialization of their invention for a specific period", "section": "Section 2.3 .1 Ethical & societal considerations in computer science"},
+            {"term": "peer-to-peer networks", "definition": "a decentralized network where each participant (peer) has equal privileges and can directly share resources, such as files, with other peers without needing a central server", "section": "Section 2.3 .1 Ethical & societal considerations in computer science"},
+            {"term": "piracy", "definition": "the unauthorized use, reproduction, or distribution of copyrighted materials, such as software, music, movies, and books", "section": "Section 2.3 .1 Ethical & societal considerations in computer science"},
+            {"term": "trademark", "definition": "a symbol, word, or phrase legally registered or established by use as representing a company or product", "section": "Section 2.3 .1 Ethical & societal considerations in computer science"},
+            {"term": "array", "definition": "a collection of items stored at contiguous memory locations; each item can be accessed using an index", "section": "Section 3.1.1 Common fundamental algorithms"},
+            {"term": "binary search", "definition": "a search algorithm that finds the position of a target value within a sorted array by repeatedly dividing the search interval in half", "section": "Section 3.1.1 Common fundamental algorithms"},
+            {"term": "bubble sort", "definition": "a simple sorting algorithm that repeatedly steps through a list, compares adjacent elements, and swaps them if they are in the wrong order", "section": "Section 3.1.1 Common fundamental algorithms"},
+            {"term": "concrete step", "definition": "a detailed action in an algorithm that specifies exactly how to perform a task", "section": "Section 3.1.1 Common fundamental algorithms"},
+            {"term": "count-controlled loop", "definition": "a loop that repeats a specific number of times; controlled by a counter variable (e.g., 'for' loop)", "section": "Section 3.1.1 Common fundamental algorithms"},
+            {"term": "desk checking", "definition": "a manual method of reviewing the logic of a program or algorithm using a pencil and paper instead of a computer", "section": "Section 3.1.1 Common fundamental algorithms"},
+            {"term": "event-controlled loop", "definition": "a loop that continues to execute until a specific condition or event occurs, such as user input or a sensor reading", "section": "Section 3.1.1 Common fundamental algorithms"},
+            {"term": "heterogeneous", "definition": "a term describing a collection of items that are of different types", "section": "Section 3.1.1 Common fundamental algorithms"},
+            {"term": "homogenous", "definition": "a term describing a collection of items that are all of the same type", "section": "Section 3.1.1 Common fundamental algorithms"},
+            {"term": "index", "definition": "a numerical representation of an element's position within an array or list", "section": "Section 3.1.1 Common fundamental algorithms"},
+            {"term": "insertion sort", "definition": "a sorting algorithm that builds the final sorted array one item at a time by inserting each new item into its correct position", "section": "Section 3.1.1 Common fundamental algorithms"},
+            {"term": "processing", "definition": "the act of performing operations on data according to a set of instructions to achieve a desired result", "section": "Section 3.1.1 Common fundamental algorithms"},
+            {"term": "record", "definition": "a composite variable that can store multiple fields of different data types, usually related to a single entity", "section": "Section 3.1.1 Common fundamental algorithms"},
+            {"term": "searching", "definition": "the process of finding a specific item or value within a collection of data", "section": "Section 3.1.1 Common fundamental algorithms"},
+            {"term": "selection sort", "definition": "a simple sorting algorithm that repeatedly finds the minimum element from the unsorted part of a list and moves it to the beginning", "section": "Section 3.1.1 Common fundamental algorithms"},
+            {"term": "sequential search (linear search)", "definition": "a search algorithm that checks each element in a list one by one until the desired element is found or the list ends", "section": "Section 3.1.1 Common fundamental algorithms"},
+            {"term": "sorting", "definition": "the process of arranging data in a particular order, such as ascending or descending", "section": "Section 3.1.1 Common fundamental algorithms"},
+            {"term": "string", "definition": "a sequence of characters treated as a single data item; commonly used to represent text", "section": "Section 3.1.1 Common fundamental algorithms"},
+            {"term": "flowchart", "definition": "a visual diagram that represents the steps in a process or algorithm using symbols and arrows to show the flow of control", "section": "Section 3.2.1 Pseudocode for algorithms"},
+            {"term": "flowline", "definition": "an arrow in a flowchart that connects symbols and indicates the direction of the process flow", "section": "Section 3.2.1 Pseudocode for algorithms"},
+            {"term": "input symbol", "definition": "a symbol in a flowchart, typically represented as a parallelogram, that indicates where data are received by the process of receiving data from an external source, such as user input or data entry", "section": "Section 3.2.1 Pseudocode for algorithms"},
+            {"term": "input/output symbol (I/O symbol)", "definition": "a symbol in a flowchart that represents an operation involving input or output, such as reading data from a user or displaying results", "section": "Section 3.2.1 Pseudocode for algorithms"},
+            {"term": "output symbol", "definition": "a symbol in a flowchart that indicates the output of data from a process", "section": "Section 3.2.1 Pseudocode for algorithms"},
+            {"term": "processing symbol", "definition": "a rectangle in a flowchart that represents a step where data is processed or an action is performed", "section": "Section 3.2.1 Pseudocode for algorithms"},
+            {"term": "terminal symbol", "definition": "an oval or rounded rectangle in a flowchart that indicates the start or end of a process", "section": "Section 3.2.1 Pseudocode for algorithms"},
+            {"term": "explicit conversion", "definition": "a type of conversion where the programmer manually changes a data type to another, often using a specific function or syntax", "section": "Section 3.2.2 Floating-point numbers, functions, & other topics"},
+            {"term": "floating-point number", "definition": "a number that can have a fractional part represented with decimal points", "section": "Section 3.2.2 Floating-point numbers, functions, & other topics"},
+            {"term": "integer division", "definition": "a division operation where the result is the whole number part of the quotient, discarding any remainder", "section": "Section 3.2.2 Floating-point numbers, functions, & other topics"},
+            {"term": "implicit conversion", "definition": "a type of conversion where the programming language automatically changes one data type to another without the programmer's intervention", "section": "Section 3.2.2 Floating-point numbers, functions, & other topics"},
+            {"term": "type conversion (type casting)", "definition": "the process of changing a value from one data type to another, which can be done explicitly by the programmer or implicitly by the programming language", "section": "Section 3.2.2 Floating-point numbers, functions, & other topics"},
+            {"term": "end-structure statement", "definition": "a statement that marks the end of a block of code, such as the end of a loop or an if statement", "section": "Section 3.3.1 Introduction to programming"},
+            {"term": "block", "definition": "a group of statements that are executed together, typically enclosed in curly braces or defined by indentation", "section": "Section 3.3.1 Introduction to programming"},
+            {"term": "dual-alternative if", "definition": "an if statement that provides two paths: one for when the condition is true and another for when it is false (also known as if-else)", "section": "Section 3.3.1 Introduction to programming"},
+            {"term": "loop structure", "definition": "a way to repeat a block of code multiple times based on a condition, such as for loops or while loops", "section": "Section 3.3.1 Introduction to programming"},
+            {"term": "loop body", "definition": "the set of statements inside a loop that are executed each time the loop runs", "section": "Section 3.3.1 Introduction to programming"},
+            {"term": "nesting structures", "definition": "placing one control structure, such as a loop or an if statement, inside another", "section": "Section 3.3.1 Introduction to programming"},
+            {"term": "null case", "definition": "a situation in which no action is taken, often used as the default case in a switch statement or when no conditions in an if statement are met", "section": "Section 3.3.1 Introduction to programming"},
+            {"term": "selection structure", "definition": "a control structure that chooses different paths of execution based on conditions, such as if statements or switch cases", "section": "Section 3.3.1 Introduction to programming"},
+            {"term": "sequence structure", "definition": "the simplest control structure where actions are performed one after another in order", "section": "Section 3.3.1 Introduction to programming"},
+            {"term": "single-alternative if", "definition": "an if statement that provides only one path of execution if the condition is true; no action is taken if the condition is false", "section": "Section 3.3.1 Introduction to programming"},
+            {"term": "stacking structures", "definition": "placing one control structure after another in sequence", "section": "Section 3.3.1 Introduction to programming"},
+            {"term": "structure", "definition": "an organized way to control the flow of a program, such as sequences, selections, and loops", "section": "Section 3.3.1 Introduction to programming"},
+            {"term": "while loop", "definition": "a loop that repeats a block of code as long as a specified condition is true", "section": "Section 3.3.1 Introduction to programming"},
+            {"term": "address binding", "definition": "the process of mapping a program's symbolic addresses to physical addresses in memory", "section": "Section 4.1.1 Operating systems"},
+            {"term": "application software", "definition": "programs designed to help users perform specific tasks, such as word processing, web browsing, or gaming", "section": "Section 4.1.1 Operating systems"},
+            {"term": "batch processing", "definition": "a method of executing a series of jobs on a computer without manual intervention where tasks are processed in batches", "section": "Section 4.1.1 Operating systems"},
+            {"term": "base register", "definition": "a register in the CPU that holds the starting address of the current memory segment; used in address translation", "section": "Section 4.1.1 Operating systems"},
+            {"term": "bounds register", "definition": "a register that holds the ending address of a memory segment, ensuring that memory accesses stay within the allocated range", "section": "Section 4.1.1 Operating systems"},
+            {"term": "context switch", "definition": "the process of storing and restoring the state of a CPU so multiple processes can share a single CPU", "section": "Section 4.1.1 Operating systems"},
+            {"term": "CPU scheduling", "definition": "the method by which an operating system decides which processes should be executed by the CPU and in what order", "section": "Section 4.1.1 Operating systems"},
+            {"term": "demand paging", "definition": "a memory management scheme where pages of data are brought into memory only when they are needed rather than in advance", "section": "Section 4.1.1 Operating systems"},
+            {"term": "dumb terminal", "definition": "a simple display and input device with no processing power relying on a central computer for computing tasks", "section": "Section 4.1.1 Operating systems"},
+            {"term": "dynamic partition technique", "definition": "a memory management method where memory is divided into variable-sized partitions based on the needs of processes", "section": "Section 4.1.1 Operating systems"},
+            {"term": "first-come, first -served (FCFS)", "definition": "a CPU scheduling algorithm that processes requests in the order they arrive without priority", "section": "Section 4.1.1 Operating systems"},
+            {"term": "fixed partition technique", "definition": "a memory management method where memory is divided into fixed - sized partitions, each holding one process", "section": "Section 4.1.1 Operating systems"},
+            {"term": "frame", "definition": "a fixed-size block of physical memory used in paging systems to hold pages of virtual memory", "section": "Section 4.1.1 Operating systems"},
+            {"term": "logical address", "definition": "an address generated by the CPU during a program's execution that is then translated to a physical address", "section": "Section 4.1.1 Operating systems"},
+            {"term": "mainframe", "definition": "a large, powerful computer that can handle many simultaneous users and tasks, often used in enterprise environments", "section": "Section 4.1.1 Operating systems"},
+            {"term": "memory management", "definition": "the process of controlling and coordinating computer memory, including the allocation and deallocation of memory spaces", "section": "Section 4.1.1 Operating systems"},
+            {"term": "multiprogramming", "definition": "a method where multiple programs are loaded into memory and executed by the CPU concurrently to maximize resource use", "section": "Section 4.1.1 Operating systems"},
+            {"term": "non-preemptive scheduling", "definition": "a CPU scheduling method where a running process is not interrupted and is allowed to finish before another process starts", "section": "Section 4.1.1 Operating systems"},
+            {"term": "operating system OS", "definition": "the main software that manages computer hardware and software resources and provides services for computer programs", "section": "Section 4.1.1 Operating systems"},
+            {"term": "page", "definition": "a fixed-size block of data in memory management representing a portion of a process's virtual address space", "section": "Section 4.1.1 Operating systems"},
+            {"term": "page map table (PMT)", "definition": "a table used in virtual memory systems to track the mapping between virtual pages and physical frames", "section": "Section 4.1.1 Operating systems"},
+            {"term": "page swap", "definition": "the process of moving pages between physical memory and disk storage to manage space in memory", "section": "Section 4.1.1 Operating systems"},
+            {"term": "paged memory technique", "definition": "a memory management method that divides memory into fixed -size pages to minimize fragmentation and efficiently manage memory", "section": "Section 4.1.1 Operating systems"},
+            {"term": "partition memory management", "definition": "a method of dividing memory into segments or partitions, each of which can hold a different process", "section": "Section 4.1.1 Operating systems"},
+            {"term": "physical address", "definition": "the actual location in computer memory hardware where data is stored", "section": "Section 4.1.1 Operating systems"},
+            {"term": "preemptive scheduling", "definition": "a CPU scheduling method where a running process can be interrupted and replaced by another process before it finishes", "section": "Section 4.1.1 Operating systems"},
+            {"term": "process", "definition": "an instance of a running program, including its current state and memory information", "section": "Section 4.1.1 Operating systems"},
+            {"term": "process control block (PCB)", "definition": "a data structure the operating system uses to store all information about a process", "section": "Section 4.1.1 Operating systems"},
+            {"term": "process management", "definition": "managing the operating system's execution of processes, including their creation, scheduling, and termination", "section": "Section 4.1.1 Operating systems"},
+            {"term": "process states", "definition": "the various stages a process goes through during its lifecycle, such as new, ready, running, waiting, and terminated", "section": "Section 4.1.1 Operating systems"},
+            {"term": "real-time system", "definition": "a computing system that processes data and responds to inputs in a specific, often very short, time frame", "section": "Section 4.1.1 Operating systems"},
+            {"term": "response time", "definition": "the time taken from the submission of a request to the start of the system's response", "section": "Section 4.1.1 Operating systems"},
+            {"term": "round-robin", "definition": "a CPU scheduling algorithm where each process is assigned a fixed time slice in a rotating order", "section": "Section 4.1.1 Operating systems"},
+            {"term": "shortest job next (SJN)", "definition": "a CPU scheduling algorithm that selects the process with the shortest expected execution time next", "section": "Section 4.1.1 Operating systems"},
+            {"term": "single contiguous memory management", "definition": "a memory management method where all processes are loaded into a single contiguous block of memory", "section": "Section 4.1.1 Operating systems"},
+            {"term": "system software", "definition": "software designed to provide a platform for other software, including operating systems and utility programs", "section": "Section 4.1.1 Operating systems"},
+            {"term": "thrashing", "definition": "a condition where excessive paging operations occur, leading to reduced system performance", "section": "Section 4.1.1 Operating systems"},
+            {"term": "time slice", "definition": "a fixed amount of CPU time allocated to each process in a round -robin scheduling algorithm", "section": "Section 4.1.1 Operating systems"},
+            {"term": "timesharing", "definition": "a method where multiple users can access a computer system concurrently by sharing time slices of the CPU", "section": "Section 4.1.1 Operating systems"},
+            {"term": "turnaround time", "definition": "the total time taken from the submission of a process to its completion", "section": "Section 4.1.1 Operating systems"},
+            {"term": "virtual machine", "definition": "software emulation of a physical computer, providing the same functionality as a physical machine", "section": "Section 4.1.1 Operating systems"},
+            {"term": "virtual memory", "definition": "a memory management technique that creates an illusion of a large contiguous memory space by using disk storage to extend physical memory", "section": "Section 4.1.1 Operating systems"},
+            {"term": "absolute path", "definition": "the complete and specific location of a file or directory in a file system, starting from the root directory", "section": "Section 4.2.1 File systems"},
+            {"term": "binary file", "definition": "a file that contains data in a format that is not human readable; typically used to store executable programs or complex data structures", "section": "Section 4.2.1 File systems"},
+            {"term": "direct file access", "definition": "the ability to retrieve or manipulate data from a file directly without sequentially accessing preceding data", "section": "Section 4.2.1 File systems"},
+            {"term": "directory", "definition": "a container used to organize files into a hierarchical structure on a computer system", "section": "Section 4.2.1 File systems"},
+            {"term": "directory tree", "definition": "a graphical representation or hierarchical structure of directories and subdirectories in a file system", "section": "Section 4.2.1 File systems"},
+            {"term": "disk scheduling", "definition": "the method an operating system uses to efficiently schedule access to disk resources, aiming to reduce seek time and optimize performance", "section": "Section 4.2.1 File systems"},
+            {"term": "file", "definition": "a named collection of data stored on a computer system, which can be text, an image, an executable, or any other type of information", "section": "Section 4.2.1 File systems"},
+            {"term": "file extension", "definition": "a suffix attached to the end of a filename indicating the format or type of the file", "section": "Section 4.2.1 File systems"},
+            {"term": "file system", "definition": "the method and data structure an operating system uses to organize and store files on storage devices such as hard drives", "section": "Section 4.2.1 File systems"},
+            {"term": "file type", "definition": "the classification or category of a file based on its content and format that determines how it can be used or opened", "section": "Section 4.2.1 File systems"},
+            {"term": "path", "definition": "a string of characters that specifies the location of a file or directory in a file system", "section": "Section 4.2.1 File systems"},
+            {"term": "relative path", "definition": "a path that specifies the location of a file or directory relative to the current working directory", "section": "Section 4.2.1 File systems"},
+            {"term": "root directory", "definition": "the top-level directory in a file system hierarchy, which contains all other directories and files", "section": "Section 4.2.1 File systems"},
+            {"term": "seek time", "definition": "the time it takes for a hard drive's read/write head to move to the track where the data are stored", "section": "Section 4.2.1 File systems"},
+            {"term": "sequential file access", "definition": "accessing data in a file by sequentially reading or writing from the beginning to the end", "section": "Section 4.2.1 File systems"},
+            {"term": "text file", "definition": "a file that contains plain text characters, typically encoded in ASCII or Unicode, and is readable by text editors and word processors", "section": "Section 4.2.1 File systems"},
+            {"term": "working directory", "definition": "the current directory in a file system from which a user or program is operating", "section": "Section 4.2.1 File systems"},
+            {"term": "access time", "definition": "the time it takes for a system to retrieve data from memory or storage", "section": "Section 5.1 Computing Components"},
+            {"term": "addressability", "definition": "the capability of a system to access and manipulate each unit of data in memory individually", "section": "Section 5.1 Computing Components"},
+            {"term": "arithmetic logic unit (ALU)", "definition": "the part of the CPU that performs arithmetic calculations and logical operations", "section": "Section 5.1 Computing Components"},
+            {"term": "block", "definition": "a fixed-size unit of data stored and accessed on a disk or in memory", "section": "Section 5.1 Computing Components"},
+            {"term": "bus width", "definition": "the number of bits that can be transmitted simultaneously on a data bus, affecting data transfer speed", "section": "Section 5.1 Computing Components"},
+            {"term": "cache memory", "definition": "a small, fast type of volatile memory that stores frequently accessed data to speed up processing", "section": "Section 5.1 Computing Components"},
+            {"term": "central processing unit (CPU)", "definition": "the main component of a computer that executes instructions and processes data", "section": "Section 5.1 Computing Components"},
+            {"term": "control unit", "definition": "the part of the CPU that directs its operation, managing the execution of instructions and coordinating other components", "section": "Section 5.1 Computing Components"},
+            {"term": "cylinder", "definition": "a set of tracks located at the same position on multiple disk platters in a hard drive", "section": "Section 5.1 Computing Components"},
+            {"term": "input unit", "definition": "devices and components used to input data into a computer system, such as keyboards and mice", "section": "Section 5.1 Computing Components"},
+            {"term": "instruction register", "definition": "a register in the CPU that holds the current instruction being executed", "section": "Section 5.1 Computing Components"},
+            {"term": "latency", "definition": "the delay before a transfer of data begins following an instruction for its transfer", "section": "Section 5.1 Computing Components"},
+            {"term": "motherboard", "definition": "the main circuit board of a computer, housing the CPU, memory, and other essential components", "section": "Section 5.1 Computing Components"},
+            {"term": "output unit", "definition": "devices and components used to output data from a computer system, such as monitors and printers", "section": "Section 5.1 Computing Components"},
+            {"term": "pipelining", "definition": "a CPU performance enhancement technique where multiple instruction phases are overlapped to improve processing speed", "section": "Section 5.1 Computing Components"},
+            {"term": "program counter", "definition": "a register in the CPU that holds the address of the next instruction to be executed", "section": "Section 5.1 Computing Components"},
+            {"term": "register", "definition": "a small, fast storage location within the CPU used to hold temporary data and instructions", "section": "Section 5.1 Computing Components"},
+            {"term": "sector", "definition": "the smallest unit of data storage on a disk, typically part of a track", "section": "Section 5.1 Computing Components"},
+            {"term": "track", "definition": "a circular path on the surface of a disk where data is magnetically recorded and read", "section": "Section 5.1 Computing Components"},
+            {"term": "transfer rate", "definition": "the speed at which data can be transmitted from one device to another, usually measured in bits per second", "section": "Section 5.1 Computing Components"},
+            {"term": "access control policy", "definition": "rules that determine who can access specific resources or data in a system and which actions they can perform", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "bandwidth", "definition": "the maximum amount of data that can be transmitted over a network connection in a given amount of time, usually measured in bits per second (bps)", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "Bluetooth", "definition": "a wireless technology that allows devices to communicate over short distances, typically used for connecting peripherals like headphones and keyboards", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "broadband", "definition": "a high-speed internet connection that is always on and faster than traditional dial -up access, such as DSL, cable, and fiber -optic", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "bus topology", "definition": "a network configuration where all devices are connected to a single central cable, or bus, through which data is transmitted", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "cable modem", "definition": "a device that provides internet access by connecting to a cable television line", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "client/server model", "definition": "a network architecture where clients (user devices) request services and resources from servers (centralized computers) that provide them", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "computer network", "definition": "a group of interconnected computers and devices that can share data and resources", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "data transfer rate", "definition": "the speed at which data is transmitted between devices over a network, usually measured in bits per second (bps)", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "digital subscriber line (DSL)", "definition": "a technology that provides high -speed internet access through telephone lines", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "domain name", "definition": "a human -readable address used to identify a website on the internet, such as www.example.com", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "domain name server", "definition": "a server that translates domain names into IP addresses, enabling browsers to locate and load internet resources", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "domain name system (DNS)", "definition": "the system that manages the translation of domain names to IP addresses, making it possible to access websites using human -readable names", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "domain squatting", "definition": "the practice of registering domain names, especially those related to trademarks, with the intent to sell them at a profit to the rightful owner", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "download", "definition": "the process of transferring data from a remote server to a local device", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "Ethernet", "definition": "a common method of networking computers in a local area network (LAN), using wired connections and protocols to manage data transmission", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "file server", "definition": "a server that stores and manages files, making them accessible to computers on the same network", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "firewall", "definition": "a security system that monitors and controls incoming and outgoing network traffic based on predetermined security rules", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "gateway", "definition": "a device that connects different networks, allowing data to flow between them", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "hostname", "definition": "a unique name assigned to a device on a network and used to identify it", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "ICANN", "definition": "an organization that manages the assignment of domain names and IP addresses on the internet", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "internet backbone", "definition": "the main infrastructure of the internet, consisting of high -speed data transmission lines and major networks", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "internet protocol (IP)", "definition": "a set of rules governing the format of data sent over the internet or other networks", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "internet service provider (ISP)", "definition": "a company that provides individuals and organizations access to the internet", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "interoperability", "definition": "the ability of different systems, devices, or software to work together and exchange information seamlessly", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "IP address", "definition": "a unique numerical identifier assigned to each device connected to a network, enabling it to communicate with other devices", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "latency", "definition": "the delay before data begins to transfer after an instruction for its transfer is given, often measured in milliseconds", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "local-area network (LAN)", "definition": "a network that connects computers and devices within a limited area, such as a home, school, or office building", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "metropolitan -area network (MAN)", "definition": "a network that spans a larger geographic area than a LAN, typically a city or a large campus", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "MIME type", "definition": "a standard that indicates the nature and format of a file, used to identify the type of content being sent over the internet", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "network neutrality", "definition": "the principle that all internet traffic should be treated equally by ISPs, without discrimination or charging differently based on user, content, or application", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "node (host)", "definition": "any device, such as a computer or printer, connected to a network that can send, receive, or manage data", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "Open Systems Interconnection (OSI) reference model", "definition": "a conceptual framework that standardizes the functions of a telecommunication or computing system into seven abstraction layers to facilitate interoperability", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "open system", "definition": "a system that uses open standards and protocols, allowing it to interact with other systems and be modified or extended by third parties", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "packet", "definition": "a small unit of data transmitted over a network, containing both the data being sent and control information for routing", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "packet switching", "definition": "a method of data transmission where data is broken into packets and sent over various routes to its destination, where it is reassembled", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "phone modem", "definition": "a device that converts digital data from a computer into analog signals for transmission over telephone lines, and vice versa", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "ping", "definition": "a network utility that tests the reachability of a host on a network and measures the time it takes for a message to travel to the host and back", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "port", "definition": "a virtual point where network connections start and end, used to identify specific processes or services on a device", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "proprietary system", "definition": "a system that is privately owned and controlled, often requiring specific software or hardware to operate", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "protocol", "definition": "a set of rules that define how data is formatted, transmitted, and received over a network", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "protocol stack", "definition": "a set of network protocol layers that work together to handle data communication, often referred to as a protocol suite", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "P2P model", "definition": "a network model where each device can act as both a client and a server, sharing resources directly with other devices without a central server", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "repeater", "definition": "a device that receives a signal and retransmits it at a higher power level to extend the range of the network", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "ring topology", "definition": "a network configuration where each device is connected to two other devices, forming a circular data path", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "router", "definition": "a device that directs data between different networks, ensuring data packets reach their correct destinations", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "star topology", "definition": "a network configuration where all devices are connected to a central hub or switch, facilitating communication", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "TCP/IP", "definition": "a set of protocols that governs how data is transmitted over the internet, ensuring reliable communication", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "top-level domain (TLD)", "definition": "the last part of a domain name, such as .com, .org, or .net, that identifies the domain's highest -level grouping", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "traceroute", "definition": "a network diagnostic tool that tracks the path data takes from one device to another, showing each step along the way", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "transmission control protocol (TCP)", "definition": "a core protocol of the internet that ensures data is delivered accurately and in the correct order", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "upload", "definition": "the process of sending data from a local device to a remote server or system", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "user datagram protocol (UDP)", "definition": "a communication protocol that allows data to be sent without establishing a connection, providing faster but less reliable transmission", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "web server", "definition": "a computer system that hosts websites and delivers web pages to users over the internet", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "wide-area network (WAN)", "definition": "a network that spans a large geographic area, connecting multiple smaller networks, such as LANs, typically using long -distance communication links", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "wireless", "definition": "a method of transmitting data without physical connections, using radio waves or other technologies", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "wireless network", "definition": "a network that uses wireless technology, such as Wi -Fi, to connect devices and enable communication without physical cables", "section": "Section 5.2 Networking for ho me & enterprise"},
+            {"term": "desktop PC", "definition": "a personal computer designed for regular use at a single location, typically on a desk, with separate components like a monitor, keyboard, and mouse", "section": "Section 5.3 Other computing devices & Internet of Things"},
+            {"term": "embedded computer", "definition": "a specialized computer integrated into larger systems or devices to perform specific control functions, such as in appliances, cars, and industrial machines", "section": "Section 5.3 Other computing devices & Internet of Things"},
+            {"term": "graphics processing unit (GPU)", "definition": "a specialized processor designed to accelerate graphics rendering and perform parallel processing tasks; commonly used in gaming, video editing, and machine learning", "section": "Section 5.3 Other computing devices & Internet of Things"},
+            {"term": "Internet of Things (IoT)", "definition": "a network of interconnected devices that can communicate and exchange data over the internet, enabling smart functionality in everyday objects like thermostats, lights, and appliances", "section": "Section 5.3 Other computing devices & Internet of Things"},
+            {"term": "laptop PC", "definition": "a portable personal computer with an integrated screen, keyboard, and battery designed for mobile use", "section": "Section 5.3 Other computing devices & Internet of Things"},
+            {"term": "mainframe", "definition": "a large, powerful computer organizations use for critical applications, bulk data processing, and large -scale transaction processing", "section": "Section 5.3 Other computing devices & Internet of Things"},
+            {"term": "multicore processor", "definition": "a single computing component with two or more independent processing units (cores), which can run multiple tasks simultaneously, enhancing performance and efficiency", "section": "Section 5.3 Other computing devices & Internet of Things"},
+            {"term": "server", "definition": "a computer or system that provides resources, data, services, or programs to other computers (known as clients) over a network", "section": "Section 5.3 Other computing devices & Internet of Things"},
+            {"term": "server farm", "definition": "a collection of servers working together in a single location to provide large -scale processing power, storage, and network resources", "section": "Section 5.3 Other computing devices & Internet of Things"},
+            {"term": "smartphone", "definition": "a mobile phone that combines cellular communication capabilities with advanced computing functions, including internet access, apps, and multimedia", "section": "Section 5.3 Other computing devices & Internet of Things"},
+            {"term": "supercomputer", "definition": "an extremely fast, powerful computer used for complex scientific calculations, simulations, and research requiring immense processing power", "section": "Section 5.3 Other computing devices & Internet of Things"},
+            {"term": "tablet", "definition": "a portable, touch -screen device larger than a smartphone and designed for browsing the web, reading, entertainment, and simple productivity tasks", "section": "Section 5.3 Other computing devices & Internet of Things"},
+
+
+        ];
+
+        // Application State
+        let currentMode = null;
+        let currentCardIndex = 0;
+        let correctCount = 0;
+        let shuffledCards = [];
+        let attemptHistory = []; // Track all attempts: {card, userAnswer, isCorrect}
+        let currentAttempt = null; // Temporary storage for current attempt
+        
+        // HTML escape function to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Shuffle array function
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Start study session
+        function startStudy(mode) {
+            currentMode = mode;
+            currentCardIndex = 0;
+            correctCount = 0;
+            attemptHistory = [];  // Reset attempt history
+            shuffledCards = shuffleArray(flashcards);
+            
+            document.getElementById('modeSelection').style.display = 'none';
+            document.getElementById('cardContainer').classList.add('active');
+            document.getElementById('totalCards').textContent = shuffledCards.length;
+            
+            if (mode === 'terms') {
+                document.getElementById('cardPrompt').textContent = 'What is the definition of:';
+            } else {
+                document.getElementById('cardPrompt').textContent = 'What term has this definition:';
+            }
+            
+            showCard();
+        }
+
+        // Display current card
+        function showCard() {
+            if (currentCardIndex >= shuffledCards.length) {
+                showCompletion();
+                return;
+            }
+            
+            const card = shuffledCards[currentCardIndex];
+            const questionText = currentMode === 'terms' ? card.term : card.definition;
+            
+            document.getElementById('currentCard').textContent = currentCardIndex + 1;
+            document.getElementById('cardQuestion').textContent = questionText;
+            document.getElementById('answerInput').value = '';
+            document.getElementById('answerInput').disabled = false;
+            document.getElementById('submitBtn').disabled = false;
+            document.getElementById('inputSection').classList.remove('hidden');
+            document.getElementById('answerReveal').classList.remove('active');
+            
+            // Clear any error message
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.classList.remove('active');
+            
+            // Focus on input field
+            document.getElementById('answerInput').focus();
+        }
+
+        // Submit answer
+        function submitAnswer() {
+            const userAnswer = document.getElementById('answerInput').value.trim();
+            const errorMessage = document.getElementById('errorMessage');
+            
+            if (!userAnswer) {
+                errorMessage.textContent = 'Please enter an answer before submitting.';
+                errorMessage.classList.add('active');
+                document.getElementById('answerInput').focus();
+                return;
+            }
+            
+            // Clear any previous error message
+            errorMessage.classList.remove('active');
+            
+            const card = shuffledCards[currentCardIndex];
+            const correctAnswer = currentMode === 'terms' ? card.definition : card.term;
+            
+            // Store the current attempt (will be completed in markAnswer)
+            currentAttempt = {
+                card: card,
+                userAnswer: userAnswer,
+                correctAnswer: correctAnswer
+            };
+            
+            document.getElementById('correctAnswerText').textContent = correctAnswer;
+            document.getElementById('answerInput').disabled = true;
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('answerReveal').classList.add('active');
+            
+            // Focus on the first grading button for better keyboard navigation
+            setTimeout(() => {
+                document.querySelector('.correct-btn').focus();
+            }, 100);
+        }
+
+        // Mark answer as correct or incorrect
+        function markAnswer(isCorrect) {
+            if (isCorrect) {
+                correctCount++;
+            }
+            
+            // Complete the attempt record
+            if (currentAttempt) {
+                currentAttempt.isCorrect = isCorrect;
+                attemptHistory.push(currentAttempt);
+                currentAttempt = null;
+            }
+            
+            currentCardIndex++;
+            showCard();
+        }
+
+        // Show completion screen
+        function showCompletion() {
+            document.getElementById('cardContainer').classList.remove('active');
+            document.getElementById('completion').classList.add('active');
+            
+            // Use currentCardIndex as the number of cards completed
+            const cardsCompleted = currentCardIndex;
+            const percentage = cardsCompleted > 0 ? Math.round((correctCount / cardsCompleted) * 100) : 0;
+            
+            document.getElementById('finalScore').textContent = correctCount;
+            document.getElementById('finalTotal').textContent = cardsCompleted;
+            document.getElementById('percentage').textContent = percentage;
+        }
+        
+        // End study session early
+        function endEarly() {
+            // Don't allow ending if no cards have been completed yet
+            if (currentCardIndex === 0) {
+                alert('Please complete at least one card before ending the session.');
+                return;
+            }
+            
+            if (confirm('End your study session now? You will see results for the cards you\'ve completed.')) {
+                showCompletion();
+            }
+        }
+
+        // Restart application
+        function restart() {
+            currentMode = null;
+            currentCardIndex = 0;
+            correctCount = 0;
+            shuffledCards = [];
+            attemptHistory = [];
+            
+            document.getElementById('modeSelection').style.display = 'flex';
+            document.getElementById('completion').classList.remove('active');
+            document.getElementById('detailedResults').classList.remove('active');
+        }
+        
+        // Show detailed results
+        function showDetailedResults() {
+            document.getElementById('completion').classList.remove('active');
+            document.getElementById('detailedResults').classList.add('active');
+            
+            // Display study mode information
+            const modeText = currentMode === 'terms' ? 
+                'You were studying <strong>Terms</strong> (shown terms, asked for definitions)' :
+                'You were studying <strong>Definitions</strong> (shown definitions, asked for terms)';
+            document.getElementById('studyModeInfo').innerHTML = modeText;
+            
+            // Sort attempt history by section to group common topics together
+            const sortedAttempts = [...attemptHistory].sort((a, b) => {
+                const sectionA = a.card.section || '';
+                const sectionB = b.card.section || '';
+                return sectionA.localeCompare(sectionB);
+            });
+            
+            // Build results table
+            const resultsTable = document.getElementById('resultsTable');
+            resultsTable.innerHTML = '';
+            
+            sortedAttempts.forEach((attempt, index) => {
+                const resultItem = document.createElement('div');
+                resultItem.className = `result-item ${attempt.isCorrect ? 'correct' : 'incorrect'}`;
+                
+                const questionLabel = currentMode === 'terms' ? 'Term' : 'Definition';
+                const answerLabel = currentMode === 'terms' ? 'Definition' : 'Term';
+                const questionShown = currentMode === 'terms' ? attempt.card.term : attempt.card.definition;
+                
+                // Escape all user-provided content to prevent XSS
+                const section = escapeHtml(attempt.card.section || 'No Section');
+                const question = escapeHtml(questionShown);
+                const userAnswer = escapeHtml(attempt.userAnswer);
+                const correctAnswer = escapeHtml(attempt.correctAnswer);
+                
+                resultItem.innerHTML = `
+                    <div class="result-header">
+                        <div class="result-section">${section}</div>
+                        <div class="result-status ${attempt.isCorrect ? 'correct' : 'incorrect'}">
+                            ${attempt.isCorrect ? '✓ Correct' : '✗ Incorrect'}
+                        </div>
+                    </div>
+                    <div class="result-content">
+                        <div class="result-row">
+                            <span class="result-label">${questionLabel}:</span>
+                            <span class="result-value">${question}</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Your Answer:</span>
+                            <div class="user-answer">${userAnswer}</div>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Correct ${answerLabel}:</span>
+                            <span class="result-value">${correctAnswer}</span>
+                        </div>
+                    </div>
+                `;
+                
+                resultsTable.appendChild(resultItem);
+            });
+        }
+        
+        // Hide detailed results and return to summary
+        function hideDetailedResults() {
+            document.getElementById('detailedResults').classList.remove('active');
+            document.getElementById('completion').classList.add('active');
+        }
+        
+        // Download results as CSV
+        function downloadCSV() {
+            // Sort attempt history by section
+            const sortedAttempts = [...attemptHistory].sort((a, b) => {
+                const sectionA = a.card.section || '';
+                const sectionB = b.card.section || '';
+                return sectionA.localeCompare(sectionB);
+            });
+            
+            // Determine column headers based on study mode
+            const questionLabel = currentMode === 'terms' ? 'Term' : 'Definition';
+            const answerLabel = currentMode === 'terms' ? 'Definition' : 'Term';
+            
+            // Create CSV header
+            let csv = 'Section,' + questionLabel + ',Your Answer,Correct ' + answerLabel + ',Result\n';
+            
+            // Add each attempt as a row
+            sortedAttempts.forEach(attempt => {
+                const section = attempt.card.section || 'No Section';
+                const questionShown = currentMode === 'terms' ? attempt.card.term : attempt.card.definition;
+                const result = attempt.isCorrect ? 'Correct' : 'Incorrect';
+                
+                // Escape CSV values (handle commas and quotes)
+                const escapeCSV = (value) => {
+                    value = String(value).replace(/"/g, '""');
+                    if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+                        return '"' + value + '"';
+                    }
+                    return value;
+                };
+                
+                csv += escapeCSV(section) + ',';
+                csv += escapeCSV(questionShown) + ',';
+                csv += escapeCSV(attempt.userAnswer) + ',';
+                csv += escapeCSV(attempt.correctAnswer) + ',';
+                csv += escapeCSV(result) + '\n';
+            });
+            
+            // Create download link
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            // Generate filename with current date/time
+            const now = new Date();
+            const dateStr = now.toISOString().slice(0, 10);
+            const timeStr = now.toTimeString().slice(0, 5).replace(':', '-');
+            const modeStr = currentMode === 'terms' ? 'Terms' : 'Definitions';
+            const filename = `Flashcard_Results_${modeStr}_${dateStr}_${timeStr}.csv`;
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Allow Enter key to submit
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('answerInput').addEventListener('keypress', function(event) {
+                if (event.key === 'Enter' && !document.getElementById('submitBtn').disabled) {
+                    submitAnswer();
+                }
+            });
+            
+            // Add keyboard shortcuts for grading (ENTER = correct, SPACE = incorrect)
+            document.addEventListener('keydown', function(event) {
+                const answerReveal = document.getElementById('answerReveal');
+                
+                // Only respond to shortcuts when answer is revealed and no input field has focus
+                if (answerReveal && answerReveal.classList.contains('active') && 
+                    document.activeElement.tagName !== 'TEXTAREA' && 
+                    document.activeElement.tagName !== 'INPUT') {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        markAnswer(true);
+                    } else if (event.key === ' ' || event.key === 'Spacebar') {
+                        event.preventDefault();
+                        markAnswer(false);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
