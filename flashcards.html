@@ -116,6 +116,9 @@
             border: 2px solid #ddd;
             border-radius: 10px;
             transition: border-color 0.3s;
+            resize: vertical;
+            min-height: 60px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         .answer-input:focus {
@@ -268,6 +271,27 @@
         .error-message.active {
             display: block;
         }
+        
+        .end-early-btn {
+            margin-top: 15px;
+            padding: 8px 16px;
+            font-size: 0.9em;
+            background: transparent;
+            color: #999;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .end-early-btn:hover {
+            background: #f8f9fa;
+            color: #666;
+            border-color: #ccc;
+        }
     </style>
 </head>
 <body>
@@ -291,7 +315,7 @@
                 <div class="card-question" id="cardQuestion"></div>
                 
                 <div id="inputSection" class="input-section">
-                    <input type="text" class="answer-input" id="answerInput" placeholder="Type your answer here..." autocomplete="off" aria-label="Your answer">
+                    <textarea class="answer-input" id="answerInput" placeholder="Type your answer here..." autocomplete="off" aria-label="Your answer" rows="3"></textarea>
                     <div id="errorMessage" class="error-message" role="alert" aria-live="assertive"></div>
                 </div>
                 
@@ -309,6 +333,8 @@
                     </div>
                 </div>
             </div>
+            
+            <button class="end-early-btn" onclick="endEarly()">End Study Session</button>
         </div>
         
         <!-- Completion Screen -->
@@ -762,12 +788,20 @@
             document.getElementById('cardContainer').classList.remove('active');
             document.getElementById('completion').classList.add('active');
             
-            const total = shuffledCards.length;
-            const percentage = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+            // Use currentCardIndex as the number of cards seen (not total deck)
+            const cardsSeen = currentCardIndex;
+            const percentage = cardsSeen > 0 ? Math.round((correctCount / cardsSeen) * 100) : 0;
             
             document.getElementById('finalScore').textContent = correctCount;
-            document.getElementById('finalTotal').textContent = total;
+            document.getElementById('finalTotal').textContent = cardsSeen;
             document.getElementById('percentage').textContent = percentage;
+        }
+        
+        // End study session early
+        function endEarly() {
+            if (confirm('End your study session now? You will see results for the cards you\'ve completed.')) {
+                showCompletion();
+            }
         }
 
         // Restart application
