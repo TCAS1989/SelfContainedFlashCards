@@ -492,7 +492,7 @@
         <div id="studyTypeSelection" class="study-type-selection" style="display: none;">
             <div id="progressInfo" class="progress-info" style="display: none;"></div>
             <button class="study-type-btn" id="studyAllBtn" onclick="startStudy('all')" aria-label="Study all flashcards in the deck">Study All Cards</button>
-            <button class="study-type-btn" id="studyIncorrectBtn" onclick="startStudy('incorrect')" aria-label="Study only the cards you got incorrect">Study Incorrect Only</button>
+            <button class="study-type-btn" id="studyIncorrectBtn" onclick="startStudy('incorrect')" aria-label="Study only cards you haven't marked correct yet">Study Not Yet Correct</button>
             <button class="btn reset-btn" onclick="resetProgress()" aria-label="Reset your progress and clear all saved correct answers">Reset Progress</button>
         </div>
         
@@ -1013,7 +1013,8 @@
                 }
             } else {
                 progressInfo.style.display = 'none';
-                studyIncorrectBtn.disabled = true;
+                // Enable "Study Not Yet Correct" button since all cards are not yet marked correct
+                studyIncorrectBtn.disabled = false;
             }
         }
 
