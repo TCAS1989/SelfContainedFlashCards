@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcard Study Program</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+        
+        .mode-selection {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .mode-btn {
+            flex: 1;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .mode-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .card-container {
+            display: none;
+        }
+        
+        .card-container.active {
+            display: block;
+        }
+        
+        .progress {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+        
+        .card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-prompt {
+            font-size: 1.2em;
+            color: #444;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .card-question {
+            font-size: 1.5em;
+            color: #222;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .input-section {
+            margin-bottom: 20px;
+        }
+        
+        .answer-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            transition: border-color 0.3s;
+        }
+        
+        .answer-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .submit-btn {
+            background: #667eea;
+            color: white;
+        }
+        
+        .submit-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .answer-reveal {
+            display: none;
+            margin-bottom: 25px;
+        }
+        
+        .answer-reveal.active {
+            display: block;
+        }
+        
+        .correct-answer {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .correct-answer-label {
+            color: #155724;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .correct-answer-text {
+            color: #155724;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+        
+        .grading-section {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .grade-btn {
+            flex: 1;
+            padding: 15px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .correct-btn {
+            background: #28a745;
+            color: white;
+        }
+        
+        .correct-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+        
+        .incorrect-btn {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .incorrect-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+        }
+        
+        .completion {
+            display: none;
+            text-align: center;
+        }
+        
+        .completion.active {
+            display: block;
+        }
+        
+        .completion h2 {
+            color: #28a745;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        
+        .score {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .restart-btn {
+            background: #667eea;
+            color: white;
+        }
+        
+        .restart-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Flashcard Study</h1>
+        
+        <!-- Mode Selection -->
+        <div id="modeSelection" class="mode-selection">
+            <button class="mode-btn" onclick="startStudy('terms')">Study Terms</button>
+            <button class="mode-btn" onclick="startStudy('definitions')">Study Definitions</button>
+        </div>
+        
+        <!-- Card Study Interface -->
+        <div id="cardContainer" class="card-container">
+            <div class="progress">
+                Card <span id="currentCard">1</span> of <span id="totalCards">0</span>
+            </div>
+            
+            <div class="card">
+                <div class="card-prompt" id="cardPrompt">What is the definition of:</div>
+                <div class="card-question" id="cardQuestion"></div>
+                
+                <div id="inputSection" class="input-section">
+                    <input type="text" class="answer-input" id="answerInput" placeholder="Type your answer here..." autocomplete="off">
+                </div>
+                
+                <button class="btn submit-btn" id="submitBtn" onclick="submitAnswer()">Submit Answer</button>
+                
+                <div id="answerReveal" class="answer-reveal">
+                    <div class="correct-answer">
+                        <div class="correct-answer-label">Correct Answer:</div>
+                        <div class="correct-answer-text" id="correctAnswerText"></div>
+                    </div>
+                    
+                    <div class="grading-section">
+                        <button class="grade-btn correct-btn" onclick="markAnswer(true)">✓ I Was Correct</button>
+                        <button class="grade-btn incorrect-btn" onclick="markAnswer(false)">✗ I Was Incorrect</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Completion Screen -->
+        <div id="completion" class="completion">
+            <h2>🎉 Study Session Complete!</h2>
+            <div class="score">
+                Score: <span id="finalScore">0</span>/<span id="finalTotal">0</span>
+                (<span id="percentage">0</span>%)
+            </div>
+            <button class="btn restart-btn" onclick="restart()">Start New Session</button>
+        </div>
+    </div>
+
+    <script>
+        // Flashcard Data - Easy to modify JSON structure
+        const flashcards = [
+            {
+                "term": "HTML",
+                "definition": "HyperText Markup Language - the standard markup language for creating web pages"
+            },
+            {
+                "term": "CSS",
+                "definition": "Cascading Style Sheets - used to style and layout web pages"
+            },
+            {
+                "term": "JavaScript",
+                "definition": "A programming language that enables interactive web pages"
+            },
+            {
+                "term": "API",
+                "definition": "Application Programming Interface - a set of rules for building and interacting with software"
+            },
+            {
+                "term": "JSON",
+                "definition": "JavaScript Object Notation - a lightweight data interchange format"
+            },
+            {
+                "term": "DOM",
+                "definition": "Document Object Model - a programming interface for HTML and XML documents"
+            },
+            {
+                "term": "HTTP",
+                "definition": "HyperText Transfer Protocol - the foundation of data communication on the web"
+            },
+            {
+                "term": "Variable",
+                "definition": "A named storage location in memory that holds a value"
+            },
+            {
+                "term": "Function",
+                "definition": "A reusable block of code designed to perform a specific task"
+            },
+            {
+                "term": "Array",
+                "definition": "A data structure that stores multiple values in a single variable"
+            }
+        ];
+
+        // Application State
+        let currentMode = null;
+        let currentCardIndex = 0;
+        let correctCount = 0;
+        let shuffledCards = [];
+
+        // Shuffle array function
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Start study session
+        function startStudy(mode) {
+            currentMode = mode;
+            currentCardIndex = 0;
+            correctCount = 0;
+            shuffledCards = shuffleArray(flashcards);
+            
+            document.getElementById('modeSelection').style.display = 'none';
+            document.getElementById('cardContainer').classList.add('active');
+            document.getElementById('totalCards').textContent = shuffledCards.length;
+            
+            if (mode === 'terms') {
+                document.getElementById('cardPrompt').textContent = 'What is the definition of:';
+            } else {
+                document.getElementById('cardPrompt').textContent = 'What term has this definition:';
+            }
+            
+            showCard();
+        }
+
+        // Display current card
+        function showCard() {
+            if (currentCardIndex >= shuffledCards.length) {
+                showCompletion();
+                return;
+            }
+            
+            const card = shuffledCards[currentCardIndex];
+            const questionText = currentMode === 'terms' ? card.term : card.definition;
+            
+            document.getElementById('currentCard').textContent = currentCardIndex + 1;
+            document.getElementById('cardQuestion').textContent = questionText;
+            document.getElementById('answerInput').value = '';
+            document.getElementById('answerInput').disabled = false;
+            document.getElementById('submitBtn').disabled = false;
+            document.getElementById('inputSection').classList.remove('hidden');
+            document.getElementById('answerReveal').classList.remove('active');
+            
+            // Focus on input field
+            document.getElementById('answerInput').focus();
+        }
+
+        // Submit answer
+        function submitAnswer() {
+            const userAnswer = document.getElementById('answerInput').value.trim();
+            
+            if (!userAnswer) {
+                alert('Please enter an answer before submitting.');
+                return;
+            }
+            
+            const card = shuffledCards[currentCardIndex];
+            const correctAnswer = currentMode === 'terms' ? card.definition : card.term;
+            
+            document.getElementById('correctAnswerText').textContent = correctAnswer;
+            document.getElementById('answerInput').disabled = true;
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('answerReveal').classList.add('active');
+        }
+
+        // Mark answer as correct or incorrect
+        function markAnswer(isCorrect) {
+            if (isCorrect) {
+                correctCount++;
+            }
+            
+            currentCardIndex++;
+            showCard();
+        }
+
+        // Show completion screen
+        function showCompletion() {
+            document.getElementById('cardContainer').classList.remove('active');
+            document.getElementById('completion').classList.add('active');
+            
+            const total = shuffledCards.length;
+            const percentage = Math.round((correctCount / total) * 100);
+            
+            document.getElementById('finalScore').textContent = correctCount;
+            document.getElementById('finalTotal').textContent = total;
+            document.getElementById('percentage').textContent = percentage;
+        }
+
+        // Restart application
+        function restart() {
+            currentMode = null;
+            currentCardIndex = 0;
+            correctCount = 0;
+            shuffledCards = [];
+            
+            document.getElementById('modeSelection').style.display = 'flex';
+            document.getElementById('completion').classList.remove('active');
+        }
+
+        // Allow Enter key to submit
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('answerInput').addEventListener('keypress', function(event) {
+                if (event.key === 'Enter' && !document.getElementById('submitBtn').disabled) {
+                    submitAnswer();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
