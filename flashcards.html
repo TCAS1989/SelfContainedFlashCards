@@ -919,7 +919,7 @@
         
         // Generate a unique identifier for a card
         function getCardId(card) {
-            // Use JSON.stringify to handle any special characters properly
+            // Use JSON.stringify to create a consistent identifier for card matching
             return JSON.stringify({ term: card.term, definition: card.definition });
         }
         
@@ -994,16 +994,16 @@
             // Check if there are correct answers saved
             const correctAnswers = getCorrectAnswers();
             const totalCards = flashcards.length;
-            const correctCount = correctAnswers.length;
-            const incorrectCount = totalCards - correctCount;
+            const masteredCount = correctAnswers.length;
+            const incorrectCount = totalCards - masteredCount;
             
             // Show progress info if there are saved correct answers
             const progressInfo = document.getElementById('progressInfo');
             const studyIncorrectBtn = document.getElementById('studyIncorrectBtn');
             
-            if (correctCount > 0) {
+            if (masteredCount > 0) {
                 progressInfo.style.display = 'block';
-                progressInfo.textContent = `You have ${correctCount} correct answer${correctCount === 1 ? '' : 's'} saved. ${incorrectCount} card${incorrectCount === 1 ? '' : 's'} remaining to master.`;
+                progressInfo.textContent = `You have ${masteredCount} correct answer${masteredCount === 1 ? '' : 's'} saved. ${incorrectCount} card${incorrectCount === 1 ? '' : 's'} remaining to master.`;
                 studyIncorrectBtn.disabled = incorrectCount === 0;
                 
                 if (incorrectCount === 0) {
@@ -1025,11 +1025,8 @@
             // Filter cards based on study type
             let cardsToStudy = flashcards;
             if (studyType === 'incorrect') {
+                // Filter out cards that have been marked correct
                 cardsToStudy = flashcards.filter(card => !isCardCorrect(card));
-                if (cardsToStudy.length === 0) {
-                    alert('No incorrect cards to study! All cards have been mastered.');
-                    return;
-                }
             }
             
             shuffledCards = shuffleArray(cardsToStudy);
