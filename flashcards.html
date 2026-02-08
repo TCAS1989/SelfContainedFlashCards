@@ -328,8 +328,8 @@
                     </div>
                     
                     <div class="grading-section">
-                        <button class="grade-btn correct-btn" onclick="markAnswer(true)" aria-label="I was correct">✓ I Was Correct</button>
-                        <button class="grade-btn incorrect-btn" onclick="markAnswer(false)" aria-label="I was incorrect">✗ I Was Incorrect</button>
+                        <button class="grade-btn correct-btn" onclick="markAnswer(true)" aria-label="I was correct, press Enter">✓ I Was Correct (ENTER)</button>
+                        <button class="grade-btn incorrect-btn" onclick="markAnswer(false)" aria-label="I was incorrect, press Space">✗ I Was Incorrect (SPACE)</button>
                     </div>
                 </div>
             </div>
@@ -826,6 +826,22 @@
             document.getElementById('answerInput').addEventListener('keypress', function(event) {
                 if (event.key === 'Enter' && !document.getElementById('submitBtn').disabled) {
                     submitAnswer();
+                }
+            });
+            
+            // Add keyboard shortcuts for grading (ENTER = correct, SPACE = incorrect)
+            document.addEventListener('keydown', function(event) {
+                const answerReveal = document.getElementById('answerReveal');
+                
+                // Only respond to shortcuts when answer is revealed and grading buttons are visible
+                if (answerReveal && answerReveal.classList.contains('active')) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        markAnswer(true);
+                    } else if (event.key === ' ' || event.key === 'Spacebar') {
+                        event.preventDefault();
+                        markAnswer(false);
+                    }
                 }
             });
         });
