@@ -894,28 +894,8 @@
         let attemptHistory = []; // Track all attempts: {card, userAnswer, isCorrect}
         let currentAttempt = null; // Temporary storage for current attempt
         
-        // Cookie Management Functions
-        function setCookie(name, value, days = 365) {
-            const date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            const expires = "expires=" + date.toUTCString();
-            document.cookie = name + "=" + value + ";" + expires + ";path=/";
-        }
-        
-        function getCookie(name) {
-            const nameEQ = name + "=";
-            const ca = document.cookie.split(';');
-            for (let i = 0; i < ca.length; i++) {
-                let c = ca[i];
-                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-            }
-            return null;
-        }
-        
-        function deleteCookie(name) {
-            document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        }
+        // LocalStorage Management Functions
+        const STORAGE_KEY = 'flashcardCorrectAnswers';
         
         // Generate a unique identifier for a card
         function getCardId(card) {
@@ -923,21 +903,25 @@
             return JSON.stringify({ term: card.term, definition: card.definition });
         }
         
-        // Get correct answers from cookie (returns array of card IDs)
+        // Get correct answers from localStorage (returns array of card IDs)
         function getCorrectAnswers() {
-            const cookieValue = getCookie('flashcardCorrectAnswers');
-            if (!cookieValue) return [];
             try {
-                return JSON.parse(decodeURIComponent(cookieValue));
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (!stored) return [];
+                return JSON.parse(stored);
             } catch (e) {
+                console.error('Error reading from localStorage:', e);
                 return [];
             }
         }
         
-        // Save correct answers to cookie
+        // Save correct answers to localStorage
         function saveCorrectAnswers(correctAnswers) {
-            const encoded = encodeURIComponent(JSON.stringify(correctAnswers));
-            setCookie('flashcardCorrectAnswers', encoded, 365);
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(correctAnswers));
+            } catch (e) {
+                console.error('Error saving to localStorage:', e);
+            }
         }
         
         // Add a card to correct answers
@@ -960,9 +944,14 @@
         // Reset all progress
         function resetProgress() {
             if (confirm('Are you sure you want to reset all your progress? This will clear all saved correct answers.')) {
-                deleteCookie('flashcardCorrectAnswers');
-                alert('Progress reset! All correct answers have been cleared.');
-                restart();
+                try {
+                    localStorage.removeItem(STORAGE_KEY);
+                    alert('Progress reset! All correct answers have been cleared.');
+                    restart();
+                } catch (e) {
+                    console.error('Error resetting progress:', e);
+                    alert('Error resetting progress. Please try again.');
+                }
             }
         }
         
