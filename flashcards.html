@@ -317,6 +317,60 @@
             box-shadow: 0 5px 15px rgba(23, 162, 184, 0.4);
         }
         
+        .reset-btn {
+            background: #ffc107;
+            color: #333;
+            margin-top: 15px;
+        }
+        
+        .reset-btn:hover {
+            background: #e0a800;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
+        }
+        
+        .progress-info {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            color: #155724;
+            font-weight: 600;
+        }
+        
+        .study-type-selection {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .study-type-btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 1em;
+            border: 2px solid #28a745;
+            background: white;
+            color: #28a745;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .study-type-btn:hover {
+            background: #28a745;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+        
+        .study-type-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
         .detailed-results {
             display: none;
             text-align: left;
@@ -430,8 +484,16 @@
         
         <!-- Mode Selection -->
         <div id="modeSelection" class="mode-selection">
-            <button class="mode-btn" onclick="startStudy('terms')" aria-label="Study Terms: You will be shown terms and asked to provide their definitions">Study Terms</button>
-            <button class="mode-btn" onclick="startStudy('definitions')" aria-label="Study Definitions: You will be shown definitions and asked to provide the matching terms">Study Definitions</button>
+            <button class="mode-btn" onclick="selectStudyMode('terms')" aria-label="Study Terms: You will be shown terms and asked to provide their definitions">Study Terms</button>
+            <button class="mode-btn" onclick="selectStudyMode('definitions')" aria-label="Study Definitions: You will be shown definitions and asked to provide the matching terms">Study Definitions</button>
+        </div>
+        
+        <!-- Study Type Selection (All vs Incorrect Only) -->
+        <div id="studyTypeSelection" class="study-type-selection" style="display: none;">
+            <div id="progressInfo" class="progress-info" style="display: none;"></div>
+            <button class="study-type-btn" id="studyAllBtn" onclick="startStudy('all')" aria-label="Study all flashcards in the deck">Study All Cards</button>
+            <button class="study-type-btn" id="studyIncorrectBtn" onclick="startStudy('incorrect')" aria-label="Study only cards you haven't marked correct yet">Study Not Yet Correct</button>
+            <button class="btn reset-btn" onclick="resetProgress()" aria-label="Reset your progress and clear all saved correct answers">Reset Progress</button>
         </div>
         
         <!-- Card Study Interface -->
@@ -825,11 +887,73 @@
 
         // Application State
         let currentMode = null;
+        let currentStudyType = null; // 'all' or 'incorrect'
         let currentCardIndex = 0;
         let correctCount = 0;
         let shuffledCards = [];
         let attemptHistory = []; // Track all attempts: {card, userAnswer, isCorrect}
         let currentAttempt = null; // Temporary storage for current attempt
+        
+        // LocalStorage Management Functions
+        const STORAGE_KEY = 'flashcardCorrectAnswers';
+        
+        // Generate a unique identifier for a card
+        function getCardId(card) {
+            // Use JSON.stringify to create a consistent identifier for card matching
+            return JSON.stringify({ term: card.term, definition: card.definition });
+        }
+        
+        // Get correct answers from localStorage (returns array of card IDs)
+        function getCorrectAnswers() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (!stored) return [];
+                return JSON.parse(stored);
+            } catch (e) {
+                console.error('Error reading from localStorage:', e);
+                return [];
+            }
+        }
+        
+        // Save correct answers to localStorage
+        function saveCorrectAnswers(correctAnswers) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(correctAnswers));
+            } catch (e) {
+                console.error('Error saving to localStorage:', e);
+            }
+        }
+        
+        // Add a card to correct answers
+        function addCorrectAnswer(card) {
+            let correctAnswers = getCorrectAnswers();
+            const cardId = getCardId(card);
+            if (!correctAnswers.includes(cardId)) {
+                correctAnswers.push(cardId);
+                saveCorrectAnswers(correctAnswers);
+            }
+        }
+        
+        // Check if a card is in correct answers
+        function isCardCorrect(card) {
+            const correctAnswers = getCorrectAnswers();
+            const cardId = getCardId(card);
+            return correctAnswers.includes(cardId);
+        }
+        
+        // Reset all progress
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all your progress? This will clear all saved correct answers.')) {
+                try {
+                    localStorage.removeItem(STORAGE_KEY);
+                    alert('Progress reset! All correct answers have been cleared.');
+                    restart();
+                } catch (e) {
+                    console.error('Error resetting progress:', e);
+                    alert('Error resetting progress. Please try again.');
+                }
+            }
+        }
         
         // HTML escape function to prevent XSS
         function escapeHtml(text) {
@@ -847,20 +971,63 @@
             }
             return shuffled;
         }
+        
+        // Select study mode (terms or definitions)
+        function selectStudyMode(mode) {
+            currentMode = mode;
+            
+            // Hide mode selection, show study type selection
+            document.getElementById('modeSelection').style.display = 'none';
+            document.getElementById('studyTypeSelection').style.display = 'block';
+            
+            // Check if there are correct answers saved
+            const correctAnswers = getCorrectAnswers();
+            const totalCards = flashcards.length;
+            const masteredCount = correctAnswers.length;
+            const incorrectCount = totalCards - masteredCount;
+            
+            // Show progress info if there are saved correct answers
+            const progressInfo = document.getElementById('progressInfo');
+            const studyIncorrectBtn = document.getElementById('studyIncorrectBtn');
+            
+            if (masteredCount > 0) {
+                progressInfo.style.display = 'block';
+                progressInfo.textContent = `You have mastered ${masteredCount} card${masteredCount === 1 ? '' : 's'}. ${incorrectCount} card${incorrectCount === 1 ? '' : 's'} remaining to master.`;
+                progressInfo.removeAttribute('aria-label');
+                studyIncorrectBtn.disabled = incorrectCount === 0;
+                
+                if (incorrectCount === 0) {
+                    progressInfo.textContent = `🎉 Congratulations! You've mastered all ${totalCards} cards! Reset your progress to study again.`;
+                    progressInfo.setAttribute('aria-label', `Congratulations! You have mastered all ${totalCards} cards! Reset your progress to study again.`);
+                }
+            } else {
+                progressInfo.style.display = 'none';
+                // Enable "Study Not Yet Correct" button since all cards are not yet marked correct
+                studyIncorrectBtn.disabled = false;
+            }
+        }
 
         // Start study session
-        function startStudy(mode) {
-            currentMode = mode;
+        function startStudy(studyType) {
+            currentStudyType = studyType;
             currentCardIndex = 0;
             correctCount = 0;
             attemptHistory = [];  // Reset attempt history
-            shuffledCards = shuffleArray(flashcards);
             
-            document.getElementById('modeSelection').style.display = 'none';
+            // Filter cards based on study type
+            let cardsToStudy = flashcards;
+            if (studyType === 'incorrect') {
+                // Filter out cards that have been marked correct
+                cardsToStudy = flashcards.filter(card => !isCardCorrect(card));
+            }
+            
+            shuffledCards = shuffleArray(cardsToStudy);
+            
+            document.getElementById('studyTypeSelection').style.display = 'none';
             document.getElementById('cardContainer').classList.add('active');
             document.getElementById('totalCards').textContent = shuffledCards.length;
             
-            if (mode === 'terms') {
+            if (currentMode === 'terms') {
                 document.getElementById('cardPrompt').textContent = 'What is the definition of:';
             } else {
                 document.getElementById('cardPrompt').textContent = 'What term has this definition:';
@@ -935,6 +1102,9 @@
         function markAnswer(isCorrect) {
             if (isCorrect) {
                 correctCount++;
+                // Save correct answer to cookie
+                const card = shuffledCards[currentCardIndex];
+                addCorrectAnswer(card);
             }
             
             // Complete the attempt record
@@ -978,12 +1148,14 @@
         // Restart application
         function restart() {
             currentMode = null;
+            currentStudyType = null;
             currentCardIndex = 0;
             correctCount = 0;
             shuffledCards = [];
             attemptHistory = [];
             
             document.getElementById('modeSelection').style.display = 'flex';
+            document.getElementById('studyTypeSelection').style.display = 'none';
             document.getElementById('completion').classList.remove('active');
             document.getElementById('detailedResults').classList.remove('active');
         }
