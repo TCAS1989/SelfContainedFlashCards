@@ -799,6 +799,12 @@
         
         // End study session early
         function endEarly() {
+            // Don't allow ending if no cards have been completed yet
+            if (currentCardIndex === 0) {
+                alert('Please complete at least one card before ending the session.');
+                return;
+            }
+            
             if (confirm('End your study session now? You will see results for the cards you\'ve completed.')) {
                 showCompletion();
             }
